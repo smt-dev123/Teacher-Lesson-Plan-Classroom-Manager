@@ -1,0 +1,2314 @@
+<!doctype html>
+<html lang="km" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ប្រព័ន្ធគ្រប់គ្រងកិច្ចតែងការ និងមេរៀនបង្រៀន - គ្រូបង្រៀន</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Kantumruy Pro & Moul -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Moul&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              khmer: ['"Kantumruy Pro"', "sans-serif"],
+              moul: ['"Moul"', "serif"],
+            },
+            colors: {
+              brand: {
+                50: "#f0f7ff",
+                100: "#e0effe",
+                500: "#0284c7",
+                600: "#0369a1",
+                700: "#075985",
+                800: "#0c4a6e",
+                900: "#082f49",
+              },
+              accent: {
+                500: "#059669",
+                600: "#047857",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Kantumruy Pro", sans-serif;
+      }
+      .font-moul {
+        font-family: "Moul", serif;
+      }
+      /* Print Specific Styling */
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #print-modal-content,
+        #print-modal-content * {
+          visibility: visible;
+        }
+        #print-modal-content {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          margin: 0;
+          padding: 10px;
+          box-shadow: none !important;
+          border: none !important;
+          background: white !important;
+          color: black !important;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-full flex flex-col transition-colors duration-200"
+  >
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- Mobile Sidebar Backdrop -->
+      <div
+        id="mobile-sidebar-backdrop"
+        onclick="toggleSidebar()"
+        class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden"
+      ></div>
+
+      <!-- Sidebar Navigation -->
+      <aside
+        id="main-sidebar"
+        class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700/60 flex flex-col justify-between transition-transform duration-300 transform -translate-x-full md:translate-x-0 shadow-lg md:shadow-none"
+      >
+        <!-- Brand & Profile Header -->
+        <div>
+          <div
+            class="h-20 px-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-700/50"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20"
+              >
+                <i class="fa-solid fa-graduation-cap text-xl"></i>
+              </div>
+              <div>
+                <h1
+                  class="font-bold text-base text-slate-900 dark:text-white leading-tight"
+                >
+                  កិច្ចតែងការគ្រូ
+                </h1>
+                <span
+                  class="text-xs text-brand-600 dark:text-brand-400 font-medium"
+                  >ប្រព័ន្ធគរុកោសល្យខ្មែរ</span
+                >
+              </div>
+            </div>
+            <button
+              onclick="toggleSidebar()"
+              class="md:hidden text-slate-500 hover:text-slate-700 p-2"
+            >
+              <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+          </div>
+
+          <!-- Navigation Links -->
+          <nav class="p-4 space-y-1.5">
+            <button
+              onclick="switchTab('dashboard')"
+              id="nav-dashboard"
+              class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300"
+            >
+              <i class="fa-solid fa-chart-pie text-lg w-5 text-center"></i>
+              <span>ផ្ទាំងគ្រប់គ្រង (Dashboard)</span>
+            </button>
+
+            <button
+              onclick="switchTab('lesson-plans')"
+              id="nav-lesson-plans"
+              class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all"
+            >
+              <i class="fa-solid fa-book-bookmark text-lg w-5 text-center"></i>
+              <span>កិច្ចតែងការបង្រៀន</span>
+            </button>
+
+            <button
+              onclick="switchTab('lessons')"
+              id="nav-lessons"
+              class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all"
+            >
+              <i class="fa-solid fa-list-check text-lg w-5 text-center"></i>
+              <span>មេរៀន & កិច្ចការសិស្ស</span>
+            </button>
+
+            <button
+              onclick="switchTab('timetable')"
+              id="nav-timetable"
+              class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all"
+            >
+              <i class="fa-solid fa-calendar-days text-lg w-5 text-center"></i>
+              <span>កាលវិភាគបង្រៀន</span>
+            </button>
+
+            <button
+              onclick="switchTab('resources')"
+              id="nav-resources"
+              class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all"
+            >
+              <i class="fa-solid fa-folder-open text-lg w-5 text-center"></i>
+              <span>ឃ្លាំងឯកសារបង្រៀន</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- User Profile Card -->
+        <div
+          class="p-4 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/70 dark:bg-slate-800/40 m-3 rounded-2xl"
+        >
+          <div class="flex items-center gap-3">
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
+              alt="Avatar"
+              class="w-10 h-10 rounded-full object-cover ring-2 ring-brand-500/30"
+            />
+            <div class="flex-1 min-w-0">
+              <h4
+                class="text-xs font-bold text-slate-900 dark:text-white truncate"
+              >
+                លោកគ្រូ សុខ ចាន់ថន
+              </h4>
+              <p class="text-[11px] text-slate-500 truncate">
+                គ្រូបង្រៀនកម្រិតអនុវិទ្យាល័យ
+              </p>
+            </div>
+            <button
+              onclick="toggleDarkMode()"
+              title="ប្តូរពណ៌ Theme"
+              class="p-2 rounded-xl text-slate-500 hover:bg-white dark:hover:bg-slate-700 shadow-sm border border-slate-200/50 dark:border-slate-600"
+            >
+              <i id="theme-icon" class="fa-solid fa-moon"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navbar -->
+        <header
+          class="h-20 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-700/60 px-6 flex items-center justify-between z-10"
+        >
+          <div class="flex items-center gap-3">
+            <button
+              onclick="toggleSidebar()"
+              class="md:hidden text-slate-600 dark:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+            >
+              <i class="fa-solid fa-bars-staggered text-xl"></i>
+            </button>
+            <div class="hidden sm:block">
+              <h2
+                id="page-title"
+                class="text-xl font-bold text-slate-800 dark:text-white"
+              >
+                ផ្ទាំងគ្រប់គ្រងទូទៅ
+              </h2>
+              <p id="page-subtitle" class="text-xs text-slate-500">
+                ស្វាគមន៍មកកាន់ប្រព័ន្ធរៀបចំការបង្រៀនប្រចាំថ្ងៃ
+              </p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-3">
+            <div class="relative hidden sm:block">
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"
+              ></i>
+              <input
+                type="text"
+                id="global-search"
+                oninput="handleGlobalSearch(this.value)"
+                placeholder="ស្វែងរកកិច្ចតែងការ ឬមេរៀន..."
+                class="pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-100 dark:bg-slate-700/60 border-none focus:ring-2 focus:ring-brand-500 w-64 text-slate-800 dark:text-white"
+              />
+            </div>
+            <button
+              onclick="openPlanModal()"
+              class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-md shadow-brand-500/20 transition-all"
+            >
+              <i class="fa-solid fa-plus"></i>
+              <span>បង្កើតកិច្ចតែងការថ្មី</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Scrollable Main Content -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 space-y-6">
+          <!-- TAB 1: DASHBOARD -->
+          <section id="tab-dashboard" class="space-y-6">
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div
+                class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm flex items-center justify-between"
+              >
+                <div>
+                  <p
+                    class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    កិច្ចតែងការសរុប
+                  </p>
+                  <h3
+                    id="stat-plans-count"
+                    class="text-2xl font-bold text-slate-800 dark:text-white mt-1"
+                  >
+                    0
+                  </h3>
+                  <span class="text-[11px] text-emerald-600 font-medium"
+                    ><i class="fa-solid fa-check-circle mr-1"></i>តាមស្តង់ដារ ៥
+                    ជំហាន</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-book"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm flex items-center justify-between"
+              >
+                <div>
+                  <p
+                    class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    មេរៀនសកម្ម
+                  </p>
+                  <h3
+                    id="stat-lessons-count"
+                    class="text-2xl font-bold text-slate-800 dark:text-white mt-1"
+                  >
+                    0
+                  </h3>
+                  <span class="text-[11px] text-brand-600 font-medium"
+                    ><i class="fa-solid fa-chalkboard-user mr-1"></i
+                    >កំពុងបង្រៀន</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-layer-group"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm flex items-center justify-between"
+              >
+                <div>
+                  <p
+                    class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    កិច្ចការផ្ទះត្រូវកែ
+                  </p>
+                  <h3
+                    id="stat-homework-count"
+                    class="text-2xl font-bold text-slate-800 dark:text-white mt-1"
+                  >
+                    0
+                  </h3>
+                  <span class="text-[11px] text-amber-600 font-medium"
+                    ><i class="fa-solid fa-clock mr-1"></i>សិស្សដាក់ស្នើ</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-pen-nib"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm flex items-center justify-between"
+              >
+                <div>
+                  <p
+                    class="text-xs font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    ម៉ោងបង្រៀនសប្តាហ៍នេះ
+                  </p>
+                  <h3
+                    class="text-2xl font-bold text-slate-800 dark:text-white mt-1"
+                  >
+                    18 ម៉ោង
+                  </h3>
+                  <span class="text-[11px] text-sky-600 font-medium"
+                    ><i class="fa-solid fa-calendar-check mr-1"></i>ថ្នាក់ ៧A,
+                    ៨B, ៩C</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-stopwatch"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions & Next Lesson Banner -->
+            <div
+              class="bg-gradient-to-r from-brand-800 to-brand-600 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+            >
+              <div class="space-y-1">
+                <span
+                  class="inline-block px-2.5 py-1 bg-white/20 rounded-full text-xs font-medium tracking-wide"
+                  >កាលវិភាគបង្រៀនបន្ទាប់</span
+                >
+                <h3 class="text-lg md:text-xl font-bold">
+                  ថ្នាក់ទី៩B • រូបវិទ្យា: ច្បាប់ចលនាទី២ ញូតុន
+                </h3>
+                <p class="text-xs text-brand-100 flex items-center gap-3 mt-1">
+                  <span
+                    ><i class="fa-regular fa-clock mr-1"></i>ម៉ោង ០៨:០០ - ០៨:៥០
+                    ព្រឹក</span
+                  >
+                  <span
+                    ><i class="fa-solid fa-door-open mr-1"></i>បន្ទប់ ២០៤ (អគារ
+                    B)</span
+                  >
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  onclick="viewPlanByTitle('ច្បាប់ទី២ញូតុន')"
+                  class="px-4 py-2 bg-white text-brand-800 rounded-xl text-xs font-bold hover:bg-slate-100 transition shadow"
+                >
+                  <i class="fa-regular fa-file-lines mr-1.5"></i>មើលកិច្ចតែងការ
+                </button>
+              </div>
+            </div>
+
+            <!-- 2 Columns: Recent Plans & Homework Pending -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <!-- Left 2 Cols: Recent Lesson Plans -->
+              <div
+                class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200/70 dark:border-slate-700/50 shadow-sm space-y-4"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3
+                      class="font-bold text-slate-800 dark:text-white text-base"
+                    >
+                      កិច្ចតែងការថ្មីៗ
+                    </h3>
+                    <p class="text-xs text-slate-500">
+                      កិច្ចតែងការដែលបានបង្កើត និងត្រៀមបង្រៀន
+                    </p>
+                  </div>
+                  <button
+                    onclick="switchTab('lesson-plans')"
+                    class="text-xs text-brand-600 dark:text-brand-400 hover:underline font-semibold"
+                  >
+                    មើលទាំងអស់ <i class="fa-solid fa-arrow-right ml-1"></i>
+                  </button>
+                </div>
+
+                <!-- List Container -->
+                <div
+                  id="recent-plans-list"
+                  class="divide-y divide-slate-100 dark:divide-slate-700"
+                >
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <!-- Right 1 Col: Homework to review -->
+              <div
+                class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200/70 dark:border-slate-700/50 shadow-sm space-y-4"
+              >
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3
+                      class="font-bold text-slate-800 dark:text-white text-base"
+                    >
+                      កិច្ចការផ្ទះត្រូវកែ
+                    </h3>
+                    <p class="text-xs text-slate-500">ស្ថានភាពសិស្សប្រគល់</p>
+                  </div>
+                  <button
+                    onclick="openAssignmentModal()"
+                    class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200"
+                  >
+                    <i class="fa-solid fa-plus mr-1"></i>ដាក់កិច្ចការ
+                  </button>
+                </div>
+
+                <div id="dashboard-assignments-list" class="space-y-3">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 2: LESSON PLANS -->
+          <section id="tab-lesson-plans" class="hidden space-y-6">
+            <!-- Filter and Search Header -->
+            <div
+              class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm"
+            >
+              <div class="flex flex-wrap items-center gap-3">
+                <div class="relative">
+                  <select
+                    id="filter-grade"
+                    onchange="renderLessonPlans()"
+                    class="text-xs font-medium rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-2"
+                  >
+                    <option value="all">គ្រប់កម្រិតថ្នាក់</option>
+                    <option value="ថ្នាក់ទី៧">ថ្នាក់ទី៧</option>
+                    <option value="ថ្នាក់ទី៨">ថ្នាក់ទី៨</option>
+                    <option value="ថ្នាក់ទី៩">ថ្នាក់ទី៩</option>
+                    <option value="ថ្នាក់ទី១០">ថ្នាក់ទី១០</option>
+                    <option value="ថ្នាក់ទី១១">ថ្នាក់ទី១១</option>
+                    <option value="ថ្នាក់ទី១២">ថ្នាក់ទី១២</option>
+                  </select>
+                </div>
+
+                <div class="relative">
+                  <select
+                    id="filter-subject"
+                    onchange="renderLessonPlans()"
+                    class="text-xs font-medium rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-2"
+                  >
+                    <option value="all">គ្រប់មុខវិជ្ជា</option>
+                    <option value="រូបវិទ្យា">រូបវិទ្យា</option>
+                    <option value="គណិតវិទ្យា">គណិតវិទ្យា</option>
+                    <option value="គីមីវិទ្យា">គីមីវិទ្យា</option>
+                    <option value="ភាសាខ្មែរ">ភាសាខ្មែរ</option>
+                    <option value="ជីវវិទ្យា">ជីវវិទ្យា</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span
+                  id="plans-count-badge"
+                  class="text-xs px-3 py-1 bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300 font-semibold rounded-full"
+                  >សរុប: 0 កិច្ចតែងការ</span
+                >
+                <button
+                  onclick="openPlanModal()"
+                  class="text-xs font-semibold px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow transition"
+                >
+                  <i class="fa-solid fa-plus mr-1"></i>បន្ថែមថ្មី
+                </button>
+              </div>
+            </div>
+
+            <!-- Cards Grid for Lesson Plans -->
+            <div
+              id="plans-grid"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            >
+              <!-- Injected via JS -->
+            </div>
+          </section>
+
+          <!-- TAB 3: LESSONS & ASSIGNMENTS -->
+          <section id="tab-lessons" class="hidden space-y-6">
+            <div
+              class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+            >
+              <div>
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white">
+                  បញ្ជីមេរៀន និងកិច្ចការសិស្ស
+                </h3>
+                <p class="text-xs text-slate-500">
+                  តាមដានដំណើរការបង្រៀន និងលទ្ធផលកិច្ចការផ្ទះ
+                </p>
+              </div>
+              <button
+                onclick="openAssignmentModal()"
+                class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow"
+              >
+                <i class="fa-solid fa-plus mr-1.5"></i>បង្កើតកិច្ចការថ្មី
+              </button>
+            </div>
+
+            <!-- Assignments Table View -->
+            <div
+              class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr
+                      class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                    >
+                      <th class="py-3.5 px-4 font-bold">ចំណងជើងកិច្ចការ</th>
+                      <th class="py-3.5 px-4 font-bold">មុខវិជ្ជា & ថ្នាក់</th>
+                      <th class="py-3.5 px-4 font-bold">កាលបរិច្ឆេទកំណត់</th>
+                      <th class="py-3.5 px-4 font-bold">ចំនួនប្រគល់</th>
+                      <th class="py-3.5 px-4 font-bold">ស្ថានភាព</th>
+                      <th class="py-3.5 px-4 font-bold text-right">សកម្មភាព</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="assignments-table-body"
+                    class="divide-y divide-slate-100 dark:divide-slate-700/50"
+                  >
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 4: TIMETABLE -->
+          <section id="tab-timetable" class="hidden space-y-6">
+            <div
+              class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/70 dark:border-slate-700/50 shadow-sm space-y-4"
+            >
+              <div
+                class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
+              >
+                <div>
+                  <h3 class="text-lg font-bold text-slate-800 dark:text-white">
+                    កាលវិភាគបង្រៀនប្រចាំសប្តាហ៍
+                  </h3>
+                  <p class="text-xs text-slate-500">
+                    ម៉ោងបង្រៀនសរុប ១៨ ម៉ោង/សប្តាហ៍ (ឆ្នាំសិក្សា ២០២៦-២០២៧)
+                  </p>
+                </div>
+                <button
+                  onclick="window.print()"
+                  class="text-xs font-semibold px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-print"></i>បោះពុម្ពកាលវិភាគ
+                </button>
+              </div>
+
+              <!-- Timetable Grid -->
+              <div class="overflow-x-auto">
+                <table
+                  class="w-full min-w-[700px] border-collapse text-xs text-center border border-slate-200 dark:border-slate-700"
+                >
+                  <thead>
+                    <tr
+                      class="bg-slate-100 dark:bg-slate-700/70 text-slate-700 dark:text-slate-200"
+                    >
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700 w-28"
+                      >
+                        ម៉ោង / ថ្ងៃ
+                      </th>
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700"
+                      >
+                        ច័ន្ទ
+                      </th>
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700"
+                      >
+                        អង្គារ
+                      </th>
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700"
+                      >
+                        ពុធ
+                      </th>
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700"
+                      >
+                        ព្រហស្បតិ៍
+                      </th>
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700"
+                      >
+                        សុក្រ
+                      </th>
+                      <th
+                        class="p-3 border border-slate-200 dark:border-slate-700"
+                      >
+                        សៅរ៍
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="divide-y divide-slate-200 dark:divide-slate-700"
+                  >
+                    <tr>
+                      <td
+                        class="p-2.5 font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      >
+                        07:00 - 07:50
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-sky-50 dark:bg-sky-950/30"
+                      >
+                        <div class="font-bold text-brand-700 dark:text-sky-300">
+                          រូបវិទ្យា (៩A)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ១០១</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-sky-50 dark:bg-sky-950/30"
+                      >
+                        <div class="font-bold text-brand-700 dark:text-sky-300">
+                          រូបវិទ្យា (៩C)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ១០៣</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-indigo-50 dark:bg-indigo-950/30"
+                      >
+                        <div
+                          class="font-bold text-indigo-700 dark:text-indigo-300"
+                        >
+                          គីមីវិទ្យា (៨B)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ២០២</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td
+                        class="p-2.5 font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      >
+                        08:00 - 08:50
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-sky-50 dark:bg-sky-950/30"
+                      >
+                        <div class="font-bold text-brand-700 dark:text-sky-300">
+                          រូបវិទ្យា (៩B)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ២០៤</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/30"
+                      >
+                        <div
+                          class="font-bold text-emerald-700 dark:text-emerald-300"
+                        >
+                          ពិសោធន៍ (៩A)
+                        </div>
+                        <div class="text-[10px] text-slate-500">
+                          បន្ទប់ Lab 1
+                        </div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-sky-50 dark:bg-sky-950/30"
+                      >
+                        <div class="font-bold text-brand-700 dark:text-sky-300">
+                          រូបវិទ្យា (៩B)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ២០៤</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-amber-50 dark:bg-amber-950/30"
+                      >
+                        <div
+                          class="font-bold text-amber-700 dark:text-amber-300"
+                        >
+                          បំប៉នសិស្សពូកែ
+                        </div>
+                        <div class="text-[10px] text-slate-500">
+                          បន្ទប់បណ្ណាល័យ
+                        </div>
+                      </td>
+                    </tr>
+
+                    <!-- Break row -->
+                    <tr
+                      class="bg-slate-100/60 dark:bg-slate-700/30 font-semibold text-slate-500 text-[11px]"
+                    >
+                      <td
+                        class="p-1 border border-slate-200 dark:border-slate-700"
+                      >
+                        08:50 - 09:10
+                      </td>
+                      <td
+                        colspan="6"
+                        class="p-1 border border-slate-200 dark:border-slate-700"
+                      >
+                        ម៉ោងចេញលេង (Recess)
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td
+                        class="p-2.5 font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      >
+                        09:10 - 10:00
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-indigo-50 dark:bg-indigo-950/30"
+                      >
+                        <div
+                          class="font-bold text-indigo-700 dark:text-indigo-300"
+                        >
+                          គីមីវិទ្យា (៨A)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ២០១</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-sky-50 dark:bg-sky-950/30"
+                      >
+                        <div class="font-bold text-brand-700 dark:text-sky-300">
+                          រូបវិទ្យា (៧A)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ១០៤</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-sky-50 dark:bg-sky-950/30"
+                      >
+                        <div class="font-bold text-brand-700 dark:text-sky-300">
+                          រូបវិទ្យា (៧B)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ១០៥</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td
+                        class="p-2.5 font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                      >
+                        10:05 - 10:55
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-950/30"
+                      >
+                        <div
+                          class="font-bold text-emerald-700 dark:text-emerald-300"
+                        >
+                          ប្រជុំបច្ចេកទេស
+                        </div>
+                        <div class="text-[10px] text-slate-500">
+                          ការិយាល័យគ្រូ
+                        </div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 bg-indigo-50 dark:bg-indigo-950/30"
+                      >
+                        <div
+                          class="font-bold text-indigo-700 dark:text-indigo-300"
+                        >
+                          គីមីវិទ្យា (៨A)
+                        </div>
+                        <div class="text-[10px] text-slate-500">បន្ទប់ ២០១</div>
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                      <td
+                        class="p-2 border border-slate-200 dark:border-slate-700 text-slate-400"
+                      >
+                        ---
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB 5: RESOURCES -->
+          <section id="tab-resources" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white">
+                  ឃ្លាំងឯកសារបង្រៀន និងគរុកោសល្យ
+                </h3>
+                <p class="text-xs text-slate-500">
+                  ឯកសារជំនួយស្មារតី, សៀវភៅគោល និងសន្លឹកកិច្ចការ
+                </p>
+              </div>
+              <button
+                onclick="addMockResource()"
+                class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow"
+              >
+                <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i>បញ្ចូលឯកសារថ្មី
+              </button>
+            </div>
+
+            <!-- Resource Folders / Files Grid -->
+            <div
+              id="resources-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+            >
+              <!-- Mock items -->
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- MODAL: CREATE / EDIT LESSON PLAN (5 STEPS STANDARD) -->
+    <div
+      id="plan-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden overflow-y-auto"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700 my-auto"
+      >
+        <!-- Modal Header -->
+        <div
+          class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/60 rounded-t-3xl"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center"
+            >
+              <i class="fa-solid fa-feather-pointed"></i>
+            </div>
+            <div>
+              <h3
+                id="plan-modal-title"
+                class="font-bold text-base text-slate-900 dark:text-white"
+              >
+                បង្កើតកិច្ចតែងការបង្រៀនថ្មី
+              </h3>
+              <p class="text-xs text-slate-500">
+                គំរូស្តង់ដារ ៥ ជំហានរបស់ក្រសួងអប់រំ យុវជន និងកីឡា
+              </p>
+            </div>
+          </div>
+          <button
+            onclick="closePlanModal()"
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 text-lg"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Modal Body (Form) -->
+        <form
+          id="plan-form"
+          onsubmit="saveLessonPlan(event)"
+          class="overflow-y-auto p-6 space-y-6 text-xs"
+        >
+          <input type="hidden" id="plan-id" />
+
+          <!-- Basic Info Row -->
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/60"
+          >
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >មុខវិជ្ជា <span class="text-rose-500">*</span></label
+              >
+              <input
+                type="text"
+                id="plan-subject"
+                required
+                placeholder="ឧ. រូបវិទ្យា"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ថ្នាក់ទី <span class="text-rose-500">*</span></label
+              >
+              <select
+                id="plan-grade"
+                required
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              >
+                <option value="ថ្នាក់ទី៧">ថ្នាក់ទី៧</option>
+                <option value="ថ្នាក់ទី៨">ថ្នាក់ទី៨</option>
+                <option value="ថ្នាក់ទី៩" selected>ថ្នាក់ទី៩</option>
+                <option value="ថ្នាក់ទី១០">ថ្នាក់ទី១០</option>
+                <option value="ថ្នាក់ទី១១">ថ្នាក់ទី១១</option>
+                <option value="ថ្នាក់ទី១២">ថ្នាក់ទី១២</option>
+              </select>
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >កាលបរិច្ឆេទ</label
+              >
+              <input
+                type="date"
+                id="plan-date"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >រយៈពេល (នាទី)</label
+              >
+              <input
+                type="text"
+                id="plan-duration"
+                value="៥០ នាទី"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+          </div>
+
+          <!-- Chapter & Topic -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ជំពូក</label
+              >
+              <input
+                type="text"
+                id="plan-chapter"
+                placeholder="ឧ. ជំពូកទី ២៖ កម្លាំង និងចលនា"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ចំណងជើងមេរៀន <span class="text-rose-500">*</span></label
+              >
+              <input
+                type="text"
+                id="plan-topic"
+                required
+                placeholder="ឧ. មេរៀនទី១៖ ច្បាប់ញូតុន (ម៉ោងទី២)"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+          </div>
+
+          <!-- 3 Objectives (ចំណេះដឹង, បំណិន, ឥរិយាបថ) -->
+          <div
+            class="space-y-3 bg-blue-50/60 dark:bg-slate-900/40 p-4 rounded-2xl border border-blue-100 dark:border-slate-700"
+          >
+            <h4
+              class="font-bold text-brand-700 dark:text-brand-300 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-bullseye"></i> វត្ថុបំណងមេរៀន (Lesson
+              Objectives)
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label
+                  class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                  >១. ចំណេះដឹង (Knowledge)</label
+                >
+                <textarea
+                  id="plan-obj-knowledge"
+                  rows="2.5"
+                  placeholder="សិស្សអាចរៀបរាប់ ឬកំណត់និយមន័យ..."
+                  class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                ></textarea>
+              </div>
+              <div>
+                <label
+                  class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                  >២. បំណិន (Skills)</label
+                >
+                <textarea
+                  id="plan-obj-skills"
+                  rows="2.5"
+                  placeholder="សិស្សចេះអនុវត្ត រូបមន្ត ឬគណនា..."
+                  class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                ></textarea>
+              </div>
+              <div>
+                <label
+                  class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                  >៣. ឥរិយាបថ (Attitude)</label
+                >
+                <textarea
+                  id="plan-obj-attitude"
+                  rows="2.5"
+                  placeholder="បណ្ដុះស្មារតីសហការ ស្រាវជ្រាវ..."
+                  class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Teaching Materials & References -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >សម្ភារឧបទេស (Teaching Materials)</label
+              >
+              <input
+                type="text"
+                id="plan-materials"
+                placeholder="ឧ. សៀវភៅពុម្ព, បន្ទះស្លាយ, រូបភាពបង្ហាញ, វីដេអូ"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ឯកសារយោង</label
+              >
+              <input
+                type="text"
+                id="plan-references"
+                placeholder="ឧ. សៀវភៅគ្រូទំព័រ ១២-១៥"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+              />
+            </div>
+          </div>
+
+          <!-- 5 Steps Process -->
+          <div class="space-y-4">
+            <h4
+              class="font-bold text-slate-800 dark:text-white flex items-center justify-between"
+            >
+              <span>ដំណើរបង្រៀន (៥ ជំហានគរុកោសល្យ)</span>
+              <span class="text-[11px] text-slate-400 font-normal"
+                >កំណត់សកម្មភាពគ្រូ និងសិស្ស</span
+              >
+            </h4>
+
+            <!-- Step 1 -->
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2"
+            >
+              <span class="font-bold text-brand-600 dark:text-brand-400"
+                >ជំហានទី១៖ ពិនិត្យរៀបរយថ្នាក់ និងវត្តមាន (២ ទៅ ៣ នាទី)</span
+              >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  id="plan-step1-teacher"
+                  placeholder="សកម្មភាពគ្រូ: ពិនិត្យអនាម័យ ឯកសណ្ឋាន និងវត្តមាន"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+                <input
+                  type="text"
+                  id="plan-step1-student"
+                  placeholder="សកម្មភាពសិស្ស: គោរពទង់ជាតិ ប្រធានថ្នាក់រាយការណ៍វត្តមាន"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2"
+            >
+              <span class="font-bold text-brand-600 dark:text-brand-400"
+                >ជំហានទី២៖ រំលឹកមេរៀនចាស់ (៣ ទៅ ៥ នាទី)</span
+              >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  id="plan-step2-teacher"
+                  placeholder="សកម្មភាពគ្រូ: សួរសំនួររំលឹក និងកែកិច្ចការផ្ទះចាស់"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+                <input
+                  type="text"
+                  id="plan-step2-student"
+                  placeholder="សកម្មភាពសិស្ស: ស្ម័គ្រចិត្តឆ្លើយសំណួរ និងផ្ទៀងផ្ទាត់ចម្លើយ"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2"
+            >
+              <span class="font-bold text-brand-600 dark:text-brand-400"
+                >ជំហានទី៣៖ មេរៀនថ្មី និងខ្លឹមសារ (៣០ នាទី)</span
+              >
+              <div class="space-y-2">
+                <input
+                  type="text"
+                  id="plan-step3-content"
+                  placeholder="ខ្លឹមសារមេរៀនសង្ខេប / ចំណុចសំខាន់..."
+                  class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <textarea
+                    id="plan-step3-teacher"
+                    rows="2"
+                    placeholder="សកម្មភាពគ្រូ: ពន្យល់បង្ហាញ បង្ហាញវត្ថុជាក់ស្តែង ដឹកនាំការពិភាក្សា..."
+                    class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                  ></textarea>
+                  <textarea
+                    id="plan-step3-student"
+                    rows="2"
+                    placeholder="សកម្មភាពសិស្ស: ចូលរួមស្តាប់ ពិភាក្សាជាក្រុម ធ្វើលំហាត់គំរូ..."
+                    class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2"
+            >
+              <span class="font-bold text-brand-600 dark:text-brand-400"
+                >ជំហានទី៤៖ ពង្រឹងចំណេះដឹង និងវាយតម្លៃ (៧ នាទី)</span
+              >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  id="plan-step4-teacher"
+                  placeholder="សកម្មភាពគ្រូ: ដាក់លំហាត់រហ័ស ឬសំណួរគន្លឹះដើម្បីវាស់ស្ទង់"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+                <input
+                  type="text"
+                  id="plan-step4-student"
+                  placeholder="សកម្មភាពសិស្ស: ឆ្លើយលំហាត់លើក្តារឆ្នួន ឬសៀវភៅព្រាង"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+              </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div
+              class="p-3.5 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2"
+            >
+              <span class="font-bold text-brand-600 dark:text-brand-400"
+                >ជំហានទី៥៖ បណ្តាំផ្ញើ និងកិច្ចការផ្ទះ (៣ នាទី)</span
+              >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  id="plan-step5-teacher"
+                  placeholder="សកម្មភាពគ្រូ: ដាក់កិច្ចការផ្ទះ និងផ្តាំឱ្យមើលមេរៀនបន្ទាប់"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+                <input
+                  type="text"
+                  id="plan-step5-student"
+                  placeholder="សកម្មភាពសិស្ស: កត់ត្រាកិច្ចការផ្ទះចូលក្នុងសៀវភៅ"
+                  class="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-800"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div
+            class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-700"
+          >
+            <button
+              type="button"
+              onclick="closePlanModal()"
+              class="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100"
+            >
+              បោះបង់
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow-md shadow-brand-500/20"
+            >
+              រក្សាទុកកិច្ចតែងការ
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: VIEW & PRINT LESSON PLAN -->
+    <div
+      id="print-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm hidden overflow-y-auto"
+    >
+      <div
+        class="bg-white text-slate-900 rounded-2xl w-full max-w-4xl max-h-[95vh] flex flex-col shadow-2xl overflow-hidden my-auto"
+      >
+        <!-- Top Bar Actions (No Print) -->
+        <div
+          class="px-6 py-3.5 bg-slate-800 text-white flex justify-between items-center no-print"
+        >
+          <span class="text-xs font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf"></i>
+            ទិដ្ឋភាពកិច្ចតែងការសម្រាប់បោះពុម្ព
+          </span>
+          <div class="flex items-center gap-2">
+            <button
+              onclick="window.print()"
+              class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg shadow"
+            >
+              <i class="fa-solid fa-print mr-1"></i>បោះពុម្ព (Print)
+            </button>
+            <button
+              onclick="closePrintModal()"
+              class="p-1.5 hover:bg-slate-700 rounded-lg text-slate-300"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Printable Document Container -->
+        <div
+          id="print-modal-content"
+          class="overflow-y-auto p-8 space-y-6 text-[12px] leading-relaxed bg-white text-slate-900"
+        >
+          <!-- Rendered dynamically via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: CREATE / EDIT HOMEWORK / ASSIGNMENT -->
+    <div
+      id="assignment-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden"
+    >
+      <div
+        class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-lg shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+      >
+        <div
+          class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center"
+        >
+          <h3
+            class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2"
+          >
+            <i class="fa-solid fa-book-open text-brand-600"></i>
+            បង្កើតកិច្ចការថ្មីជូនសិស្ស
+          </h3>
+          <button
+            onclick="closeAssignmentModal()"
+            class="text-slate-400 hover:text-slate-600"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <form
+          id="assignment-form"
+          onsubmit="saveAssignment(event)"
+          class="p-6 space-y-4 text-xs"
+        >
+          <div>
+            <label
+              class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+              >ចំណងជើងកិច្ចការ <span class="text-rose-500">*</span></label
+            >
+            <input
+              type="text"
+              id="asg-title"
+              required
+              placeholder="ឧ. លំហាត់ទី១ និងទី២ ទំព័រ ៤៥"
+              class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-slate-800 dark:text-white"
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >មុខវិជ្ជា</label
+              >
+              <input
+                type="text"
+                id="asg-subject"
+                value="រូបវិទ្យា"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-slate-800 dark:text-white"
+              />
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ថ្នាក់</label
+              >
+              <input
+                type="text"
+                id="asg-grade"
+                value="ថ្នាក់ទី៩B"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-slate-800 dark:text-white"
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ថ្ងៃផុតកំណត់</label
+              >
+              <input
+                type="date"
+                id="asg-due"
+                required
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-slate-800 dark:text-white"
+              />
+            </div>
+            <div>
+              <label
+                class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+                >ចំនួនសិស្សសរុប</label
+              >
+              <input
+                type="number"
+                id="asg-total"
+                value="៣៦"
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-slate-800 dark:text-white"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              class="block font-semibold mb-1 text-slate-700 dark:text-slate-300"
+              >សេចក្តីណែនាំបន្ថែម</label
+            >
+            <textarea
+              id="asg-desc"
+              rows="3"
+              placeholder="សូមធ្វើក្នុងសៀវភៅលំហាត់ ហើយថតផ្ញើ ឬប្រគល់នៅម៉ោងបន្ទាប់..."
+              class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 text-slate-800 dark:text-white"
+            ></textarea>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              onclick="closeAssignmentModal()"
+              class="px-4 py-2 border rounded-xl"
+            >
+              បោះបង់
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 bg-brand-600 text-white rounded-xl font-bold shadow"
+            >
+              ដាក់កិច្ចការ
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Custom Alert Toast Box (No alert() used) -->
+    <div
+      id="toast"
+      class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 transition-opacity duration-300 opacity-0 pointer-events-none"
+    >
+      <i
+        id="toast-icon"
+        class="fa-solid fa-circle-check text-emerald-400 text-base"
+      ></i>
+      <span id="toast-msg">ប្រតិបត្តិការជោគជ័យ</span>
+    </div>
+
+    <!-- APPLICATION LOGIC SCRIPT -->
+    <script>
+      // Initial Seed Data for Lesson Plans
+      const defaultPlans = [
+        {
+          id: "plan-1",
+          subject: "រូបវិទ្យា",
+          grade: "ថ្នាក់ទី៩",
+          chapter: "ជំពូកទី ២៖ កម្លាំង និងចលនា",
+          topic: "ច្បាប់ទី២ញូតុន (F = ma)",
+          date: "2026-11-06",
+          duration: "៥០ នាទី",
+          objKnowledge:
+            "សិស្សអាចថ្លែងពីនិយមន័យនៃច្បាប់ទី២ញូតុន និងទាញយករូបមន្ត F=m*a បានត្រឹមត្រូវ។",
+          objSkills:
+            "សិស្សអាចគណនាកម្លាំង ម៉ាស ឬសំទុះ តាមលំហាត់គំរូជាក់ស្តែងបានដោយឥតខុសឆ្គង។",
+          objAttitude:
+            "បណ្តុះស្មារតីសង្កេត ចង់ចេះចង់ដឹង និងការសហការបំពេញការងារជាក្រុម។",
+          materials:
+            "រទេះពិសោធន៍, ឌីណាម៉ូម៉ែត្រ, ផ្ទាំងរូបភាពរូបមន្ត, សៀវភៅពុម្ពរូបវិទ្យាថ្នាក់ទី៩",
+          references: "សៀវភៅពុម្ពទំព័រ ៥០ ដល់ ៥៤",
+          step1Teacher:
+            "ពិនិត្យអនាម័យ ឯកសណ្ឋានសិស្ស និងកត់ត្រាវត្តមានសិស្សអវត្តមាន",
+          step1Student:
+            "ប្រធានថ្នាក់រាយការណ៍វត្តមាន និងសិស្សទាំងអស់អង្គុយរៀបរយ",
+          step2Teacher: "សួរ៖ តើច្បាប់ទី១ញូតុនចែងដូចម្តេច? និងកែលំហាត់ចាស់",
+          step2Student:
+            "សិស្សឡើងឆ្លើយនិយមន័យច្បាប់និចលភាព និងផ្ទៀងផ្ទាត់ចម្លើយ",
+          step3Content:
+            "រូបមន្ត F = ma (F: កម្លាំងគិតជាញូតុន N, m: ម៉ាស kg, a: សំទុះ m/s²)",
+          step3Teacher:
+            "បង្ហាញការពិសោធន៍ទាញរទេះដោយកម្លាំងខុសៗគ្នា បន្ទាប់មកពន្យល់ទំនាក់ទំនងច្បាប់ទី២",
+          step3Student:
+            "សង្កេត ពិភាក្សាជាដៃគូ កត់ត្រារូបមន្ត និងអនុវត្តលំហាត់គំរូ",
+          step4Teacher:
+            "ដាក់លំហាត់៖ ម៉ាស 5kg រងកម្លាំង 20N រកសំទុះ? ហៅសិស្ស ២នាក់ឡើងក្តារខៀន",
+          step4Student:
+            "អនុវត្តគណនាក្នុងសៀវភៅព្រាង និងពិនិត្យចម្លើយ (a = 4 m/s²)",
+          step5Teacher:
+            "សង្ខេបចំណុចសំខាន់ ដាក់លំហាត់ផ្ទះទំព័រ ៥៥ និងរៀបចំសម្អាតបន្ទប់",
+          step5Student: "កត់ត្រាកិច្ចការផ្ទះ និងត្រៀមរៀបចំផ្លាស់ប្តូរម៉ោង",
+        },
+        {
+          id: "plan-2",
+          subject: "គណិតវិទ្យា",
+          grade: "ថ្នាក់ទី៨",
+          chapter: "ជំពូកទី ៣៖ សមីការដឺក្រេទី១ មានមួយអញ្ញាត",
+          topic: "ការដោះស្រាយសមីការទម្រង់ ax + b = 0",
+          date: "2026-11-08",
+          duration: "៥០ នាទី",
+          objKnowledge:
+            "សិស្សស្គាល់ទម្រង់ទូទៅនៃសមីការដឺក្រេទី១ និងដឹងពីវិធានផ្ទេរតួ។",
+          objSkills: "ចេះដោះស្រាយសមីការ និងផ្ទៀងផ្ទាត់ចម្លើយបានត្រឹមត្រូវ។",
+          objAttitude: "មានភាពហ្មត់ចត់ និងទំនុកចិត្តក្នុងការគិតលេខ។",
+          materials: "បន្ទាត់, ក្តារឆ្នួន, បណ្ណលំហាត់រហ័ស",
+          references: "គណិតវិទ្យាថ្នាក់ទី៨ ទំព័រ ៧៨",
+          step1Teacher: "ពិនិត្យវត្តមាន និងសណ្តាប់ធ្នាប់ក្នុងថ្នាក់",
+          step1Student: "រៀបចំសម្ភារសិក្សាលើតុ",
+          step2Teacher: "រំលឹកពីការបូកដកកន្សោមពីជគណិត",
+          step2Student: "ឆ្លើយសំណួរគ្រូជាបុគ្គល",
+          step3Content: "វិធានផ្ទេរតួ៖ បូកទៅជាដក គុណទៅជាចែក (x = -b / a)",
+          step3Teacher: "បង្ហាញឧទាហរណ៍ 2x + 6 = 0 និងពន្យល់ដំណោះស្រាយលម្អិត",
+          step3Student: "សរសេរចូលសៀវភៅមេរៀន និងសួរបញ្ជាក់កន្លែងមិនទាន់ច្បាស់",
+          step4Teacher: "ដាក់លំហាត់លើក្តារខៀន ៣ សំណួរ ឱ្យសិស្សប្រកួតគ្នា",
+          step4Student: "លើកក្តារឆ្នួនបង្ហាញចម្លើយ",
+          step5Teacher: "ដាក់កិច្ចការផ្ទះលេខ ១ ដល់ ៥ ទំព័រ ៨០",
+          step5Student: "កត់ត្រាកិច្ចការផ្ទះ",
+        },
+      ];
+
+      // Initial Assignments
+      const defaultAssignments = [
+        {
+          id: "asg-1",
+          title: "លំហាត់ច្បាប់ទី២ញូតុន (សំណួរ ១-៤)",
+          subject: "រូបវិទ្យា",
+          grade: "ថ្នាក់ទី៩B",
+          due: "2026-11-09",
+          total: 36,
+          submitted: 28,
+          status: "pending",
+        },
+        {
+          id: "asg-2",
+          title: "ដោះស្រាយសមីការ ៥ លំហាត់លើក្រដាសកិច្ចការ",
+          subject: "គណិតវិទ្យា",
+          grade: "ថ្នាក់ទី៨A",
+          due: "2026-11-07",
+          total: 40,
+          submitted: 39,
+          status: "completed",
+        },
+      ];
+
+      // Teaching Resources Mock
+      const defaultResources = [
+        {
+          id: "res-1",
+          title: "កិច្ចតែងការគំរូរូបវិទ្យា ថ្នាក់ទី៩ (PDF)",
+          type: "pdf",
+          icon: "fa-file-pdf",
+          color: "text-rose-500",
+          size: "2.4 MB",
+        },
+        {
+          id: "res-2",
+          title: "ស្លាយបង្រៀន ច្បាប់ញូតុន (PowerPoint)",
+          type: "ppt",
+          icon: "fa-file-powerpoint",
+          color: "text-amber-500",
+          size: "14.8 MB",
+        },
+        {
+          id: "res-3",
+          title: "សន្លឹកកិច្ចការសមីការដឺក្រេទី១",
+          type: "doc",
+          icon: "fa-file-word",
+          color: "text-blue-500",
+          size: "850 KB",
+        },
+        {
+          id: "res-4",
+          title: "វីដេអូពិសោធន៍កម្លាំងទាញ និងរទេះ",
+          type: "video",
+          icon: "fa-file-video",
+          color: "text-purple-500",
+          size: "45 MB",
+        },
+      ];
+
+      // Local Storage Helpers
+      function getStoredPlans() {
+        const plans = localStorage.getItem("kh_teacher_plans");
+        return plans ? JSON.parse(plans) : defaultPlans;
+      }
+
+      function setStoredPlans(plans) {
+        localStorage.setItem("kh_teacher_plans", JSON.stringify(plans));
+      }
+
+      function getStoredAssignments() {
+        const data = localStorage.getItem("kh_teacher_assignments");
+        return data ? JSON.parse(data) : defaultAssignments;
+      }
+
+      function setStoredAssignments(data) {
+        localStorage.setItem("kh_teacher_assignments", JSON.stringify(data));
+      }
+
+      // App Initialization
+      window.addEventListener("DOMContentLoaded", () => {
+        // Set default date in forms
+        const today = new Date().toISOString().split("T")[0];
+        const planDateEl = document.getElementById("plan-date");
+        const asgDueEl = document.getElementById("asg-due");
+        if (planDateEl) planDateEl.value = today;
+        if (asgDueEl) asgDueEl.value = today;
+
+        // Theme sync
+        if (localStorage.getItem("theme") === "dark") {
+          document.documentElement.classList.add("dark");
+          document.getElementById("theme-icon").className = "fa-solid fa-sun";
+        }
+
+        // Render initial
+        renderDashboard();
+        renderLessonPlans();
+        renderAssignments();
+        renderResources();
+      });
+
+      // Dark Mode Toggle
+      function toggleDarkMode() {
+        const isDark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        document.getElementById("theme-icon").className = isDark
+          ? "fa-solid fa-sun"
+          : "fa-solid fa-moon";
+        showToast(isDark ? "បានប្តូរទៅ Dark Mode" : "បានប្តូរទៅ Light Mode");
+      }
+
+      // Mobile Sidebar Toggle
+      function toggleSidebar() {
+        const sidebar = document.getElementById("main-sidebar");
+        const backdrop = document.getElementById("mobile-sidebar-backdrop");
+        sidebar.classList.toggle("-translate-x-full");
+        backdrop.classList.toggle("hidden");
+      }
+
+      // Tab Navigation
+      function switchTab(tabId) {
+        const tabs = [
+          "dashboard",
+          "lesson-plans",
+          "lessons",
+          "timetable",
+          "resources",
+        ];
+        tabs.forEach((t) => {
+          const tabEl = document.getElementById(`tab-${t}`);
+          const navEl = document.getElementById(`nav-${t}`);
+          if (t === tabId) {
+            tabEl.classList.remove("hidden");
+            navEl.classList.add(
+              "bg-brand-50",
+              "text-brand-700",
+              "dark:bg-brand-900/40",
+              "dark:text-brand-300",
+              "font-semibold",
+            );
+            navEl.classList.remove("text-slate-600", "dark:text-slate-300");
+          } else {
+            tabEl.classList.add("hidden");
+            navEl.classList.remove(
+              "bg-brand-50",
+              "text-brand-700",
+              "dark:bg-brand-900/40",
+              "dark:text-brand-300",
+              "font-semibold",
+            );
+            navEl.classList.add("text-slate-600", "dark:text-slate-300");
+          }
+        });
+
+        // Update Titles
+        const titleMap = {
+          dashboard: [
+            "ផ្ទាំងគ្រប់គ្រងទូទៅ",
+            "ស្វាគមន៍មកកាន់ប្រព័ន្ធរៀបចំការបង្រៀនប្រចាំថ្ងៃ",
+          ],
+          "lesson-plans": [
+            "កិច្ចតែងការបង្រៀន",
+            "កិច្ចតែងការគរុកោសល្យតាមស្តង់ដារ ៥ ជំហាន",
+          ],
+          lessons: [
+            "មេរៀន & កិច្ចការសិស្ស",
+            "តាមដានស្ថានភាពសិស្សប្រគល់កិច្ចការ និងលំហាត់",
+          ],
+          timetable: ["កាលវិភាគបង្រៀន", "តារាងម៉ោងបង្រៀនប្រចាំសប្តាហ៍"],
+          resources: [
+            "ឃ្លាំងឯកសារបង្រៀន",
+            "រក្សាទុកស្លាយ, សន្លឹកកិច្ចការ និងឯកសារជំនួយ",
+          ],
+        };
+        document.getElementById("page-title").innerText = titleMap[tabId][0];
+        document.getElementById("page-subtitle").innerText = titleMap[tabId][1];
+
+        // Close mobile sidebar if open
+        if (
+          !document
+            .getElementById("main-sidebar")
+            .classList.contains("-translate-x-full")
+        ) {
+          toggleSidebar();
+        }
+      }
+
+      // Render Dashboard
+      function renderDashboard() {
+        const plans = getStoredPlans();
+        const assignments = getStoredAssignments();
+
+        document.getElementById("stat-plans-count").innerText = plans.length;
+        document.getElementById("stat-lessons-count").innerText =
+          plans.length + 4; // Mock total lessons
+
+        const pendingAsg = assignments.filter(
+          (a) => a.submitted < a.total,
+        ).length;
+        document.getElementById("stat-homework-count").innerText = pendingAsg;
+
+        // Recent Plans
+        const recentContainer = document.getElementById("recent-plans-list");
+        recentContainer.innerHTML = "";
+        if (plans.length === 0) {
+          recentContainer.innerHTML =
+            '<div class="py-6 text-center text-slate-400">មិនទាន់មានកិច្ចតែងការនៅឡើយទេ</div>';
+        } else {
+          plans.slice(0, 4).forEach((plan) => {
+            const item = document.createElement("div");
+            item.className =
+              "py-3.5 flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-700/30 px-2 rounded-xl transition";
+            item.innerHTML = `
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 flex items-center justify-center font-bold text-sm shrink-0">
+                ${plan.subject.substring(0, 2)}
+              </div>
+              <div class="min-w-0">
+                <h4 class="font-bold text-slate-800 dark:text-white truncate text-xs sm:text-sm">${plan.topic}</h4>
+                <p class="text-[11px] text-slate-500">${plan.grade} • ${plan.subject} • ${plan.duration || "៥០ នាទី"}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="previewPrintPlan('${plan.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold">
+                <i class="fa-solid fa-eye mr-1"></i>មើល
+              </button>
+            </div>
+          `;
+            recentContainer.appendChild(item);
+          });
+        }
+
+        // Homework in dashboard
+        const asgContainer = document.getElementById(
+          "dashboard-assignments-list",
+        );
+        asgContainer.innerHTML = "";
+        assignments.forEach((asg) => {
+          const percent = Math.round((asg.submitted / asg.total) * 100);
+          const card = document.createElement("div");
+          card.className =
+            "p-3 rounded-xl border border-slate-200/80 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 space-y-2";
+          card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h5 class="font-bold text-xs text-slate-800 dark:text-white">${asg.title}</h5>
+              <span class="text-[10px] text-slate-500">${asg.grade} • ផុតកំណត់: ${asg.due}</span>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${percent >= 90 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300" : "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"}">${percent}%</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-brand-600 h-full rounded-full" style="width: ${percent}%"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-500">
+            <span>បានប្រគល់: ${asg.submitted} / ${asg.total} នាក់</span>
+            <button onclick="switchTab('lessons')" class="text-brand-600 dark:text-brand-400 font-semibold hover:underline">ពិនិត្យ</button>
+          </div>
+        `;
+          asgContainer.appendChild(card);
+        });
+      }
+
+      // Render Lesson Plans Grid with Filtering
+      function renderLessonPlans() {
+        const plans = getStoredPlans();
+        const gradeFilter = document.getElementById("filter-grade").value;
+        const subjectFilter = document.getElementById("filter-subject").value;
+
+        const filtered = plans.filter((p) => {
+          const matchesGrade = gradeFilter === "all" || p.grade === gradeFilter;
+          const matchesSubject =
+            subjectFilter === "all" || p.subject.includes(subjectFilter);
+          return matchesGrade && matchesSubject;
+        });
+
+        document.getElementById("plans-count-badge").innerText =
+          `សរុប: ${filtered.length} កិច្ចតែងការ`;
+
+        const container = document.getElementById("plans-grid");
+        container.innerHTML = "";
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+          <div class="col-span-full py-16 text-center bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+            <i class="fa-solid fa-book-open text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+            <h4 class="font-bold text-slate-700 dark:text-slate-300 text-sm">មិនមានកិច្ចតែងការតាមការស្វែងរកទេ</h4>
+            <p class="text-xs text-slate-500 mt-1">អ្នកអាចចុចប៊ូតុង "បន្ថែមថ្មី" ដើម្បីបង្កើតកិច្ចតែងការបង្រៀន</p>
+          </div>
+        `;
+          return;
+        }
+
+        filtered.forEach((p) => {
+          const card = document.createElement("div");
+          card.className =
+            "bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col justify-between p-5 space-y-4";
+          card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">
+                ${p.grade}
+              </span>
+              <span class="text-[11px] text-slate-400 font-medium">
+                <i class="fa-regular fa-clock mr-1"></i>${p.duration || "៥០ នាទី"}
+              </span>
+            </div>
+
+            <h4 class="font-bold text-sm text-slate-800 dark:text-white mt-3 line-clamp-1">${p.topic}</h4>
+            <p class="text-xs text-brand-600 dark:text-brand-400 font-medium mt-0.5">${p.subject} • ${p.chapter || "មេរៀនទូទៅ"}</p>
+
+            <div class="mt-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl space-y-1.5 border border-slate-100 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300">
+              <p class="line-clamp-2"><strong class="text-slate-800 dark:text-white">វត្ថុបំណង៖</strong> ${p.objKnowledge || "សិស្សយល់ដឹងខ្លឹមសារមេរៀន"}</p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">${p.date || "កាលបរិច្ឆេទថ្មីៗ"}</span>
+            <div class="flex items-center gap-1.5">
+              <button onclick="editPlan('${p.id}')" title="កែប្រែ" class="p-2 text-slate-500 hover:text-brand-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button onclick="deletePlan('${p.id}')" title="លុប" class="p-2 text-slate-500 hover:text-rose-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+              <button onclick="previewPrintPlan('${p.id}')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow">
+                <i class="fa-solid fa-print mr-1"></i>មើល/Print
+              </button>
+            </div>
+          </div>
+        `;
+          container.appendChild(card);
+        });
+      }
+
+      // Render Assignments Table
+      function renderAssignments() {
+        const list = getStoredAssignments();
+        const tbody = document.getElementById("assignments-table-body");
+        tbody.innerHTML = "";
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">មិនទាន់មានកិច្ចការដាក់ជូនសិស្សទេ</td></tr>`;
+          return;
+        }
+
+        list.forEach((asg) => {
+          const percent = Math.round((asg.submitted / asg.total) * 100);
+          const tr = document.createElement("tr");
+          tr.className =
+            "hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition";
+          tr.innerHTML = `
+          <td class="py-3 px-4 font-semibold text-slate-800 dark:text-white">${asg.title}</td>
+          <td class="py-3 px-4 text-slate-600 dark:text-slate-300">${asg.subject} (${asg.grade})</td>
+          <td class="py-3 px-4 text-slate-500">${asg.due}</td>
+          <td class="py-3 px-4">
+            <span class="font-bold text-slate-800 dark:text-white">${asg.submitted}</span> / ${asg.total} នាក់
+            <span class="text-[10px] ml-1 text-slate-400">(${percent}%)</span>
+          </td>
+          <td class="py-3 px-4">
+            <span class="px-2.5 py-0.5 rounded-full font-bold text-[10px] ${asg.submitted === asg.total ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300" : "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"}">
+              ${asg.submitted === asg.total ? "រួចរាល់" : "កំពុងប្រមូល"}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button onclick="incrementSubmission('${asg.id}')" title="បន្ថែមចំនួនសិស្សប្រគល់" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg mr-1 text-[11px]">
+              +១ ប្រគល់
+            </button>
+            <button onclick="deleteAssignment('${asg.id}')" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Render Teaching Resources
+      function renderResources() {
+        const container = document.getElementById("resources-grid");
+        container.innerHTML = "";
+        defaultResources.forEach((res) => {
+          const item = document.createElement("div");
+          item.className =
+            "bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-between";
+          item.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <i class="fa-solid ${res.icon} text-2xl ${res.color}"></i>
+            <div class="min-w-0">
+              <h5 class="text-xs font-bold text-slate-800 dark:text-white truncate">${res.title}</h5>
+              <span class="text-[10px] text-slate-400">${res.size}</span>
+            </div>
+          </div>
+          <button onclick="showToast('កំពុងទាញយកឯកសារ...')" class="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+            <i class="fa-solid fa-download"></i>
+          </button>
+        `;
+          container.appendChild(item);
+        });
+      }
+
+      // Modal Control: Lesson Plan
+      function openPlanModal(planToEdit = null) {
+        document.getElementById("plan-modal").classList.remove("hidden");
+        const form = document.getElementById("plan-form");
+        form.reset();
+
+        if (planToEdit) {
+          document.getElementById("plan-modal-title").innerText =
+            "កែប្រែកិច្ចតែងការបង្រៀន";
+          document.getElementById("plan-id").value = planToEdit.id;
+          document.getElementById("plan-subject").value =
+            planToEdit.subject || "";
+          document.getElementById("plan-grade").value =
+            planToEdit.grade || "ថ្នាក់ទី៩";
+          document.getElementById("plan-date").value = planToEdit.date || "";
+          document.getElementById("plan-duration").value =
+            planToEdit.duration || "៥០ នាទី";
+          document.getElementById("plan-chapter").value =
+            planToEdit.chapter || "";
+          document.getElementById("plan-topic").value = planToEdit.topic || "";
+          document.getElementById("plan-obj-knowledge").value =
+            planToEdit.objKnowledge || "";
+          document.getElementById("plan-obj-skills").value =
+            planToEdit.objSkills || "";
+          document.getElementById("plan-obj-attitude").value =
+            planToEdit.objAttitude || "";
+          document.getElementById("plan-materials").value =
+            planToEdit.materials || "";
+          document.getElementById("plan-references").value =
+            planToEdit.references || "";
+
+          document.getElementById("plan-step1-teacher").value =
+            planToEdit.step1Teacher || "";
+          document.getElementById("plan-step1-student").value =
+            planToEdit.step1Student || "";
+          document.getElementById("plan-step2-teacher").value =
+            planToEdit.step2Teacher || "";
+          document.getElementById("plan-step2-student").value =
+            planToEdit.step2Student || "";
+          document.getElementById("plan-step3-content").value =
+            planToEdit.step3Content || "";
+          document.getElementById("plan-step3-teacher").value =
+            planToEdit.step3Teacher || "";
+          document.getElementById("plan-step3-student").value =
+            planToEdit.step3Student || "";
+          document.getElementById("plan-step4-teacher").value =
+            planToEdit.step4Teacher || "";
+          document.getElementById("plan-step4-student").value =
+            planToEdit.step4Student || "";
+          document.getElementById("plan-step5-teacher").value =
+            planToEdit.step5Teacher || "";
+          document.getElementById("plan-step5-student").value =
+            planToEdit.step5Student || "";
+        } else {
+          document.getElementById("plan-modal-title").innerText =
+            "បង្កើតកិច្ចតែងការបង្រៀនថ្មី";
+          document.getElementById("plan-id").value = "";
+          document.getElementById("plan-date").value = new Date()
+            .toISOString()
+            .split("T")[0];
+        }
+      }
+
+      function closePlanModal() {
+        document.getElementById("plan-modal").classList.add("hidden");
+      }
+
+      // Save Lesson Plan
+      function saveLessonPlan(e) {
+        e.preventDefault();
+        const id =
+          document.getElementById("plan-id").value || "plan-" + Date.now();
+        const planData = {
+          id: id,
+          subject: document.getElementById("plan-subject").value,
+          grade: document.getElementById("plan-grade").value,
+          date: document.getElementById("plan-date").value,
+          duration: document.getElementById("plan-duration").value,
+          chapter: document.getElementById("plan-chapter").value,
+          topic: document.getElementById("plan-topic").value,
+          objKnowledge: document.getElementById("plan-obj-knowledge").value,
+          objSkills: document.getElementById("plan-obj-skills").value,
+          objAttitude: document.getElementById("plan-obj-attitude").value,
+          materials: document.getElementById("plan-materials").value,
+          references: document.getElementById("plan-references").value,
+          step1Teacher: document.getElementById("plan-step1-teacher").value,
+          step1Student: document.getElementById("plan-step1-student").value,
+          step2Teacher: document.getElementById("plan-step2-teacher").value,
+          step2Student: document.getElementById("plan-step2-student").value,
+          step3Content: document.getElementById("plan-step3-content").value,
+          step3Teacher: document.getElementById("plan-step3-teacher").value,
+          step3Student: document.getElementById("plan-step3-student").value,
+          step4Teacher: document.getElementById("plan-step4-teacher").value,
+          step4Student: document.getElementById("plan-step4-student").value,
+          step5Teacher: document.getElementById("plan-step5-teacher").value,
+          step5Student: document.getElementById("plan-step5-student").value,
+        };
+
+        const plans = getStoredPlans();
+        const existingIndex = plans.findIndex((p) => p.id === id);
+        if (existingIndex > -1) {
+          plans[existingIndex] = planData;
+          showToast("បានកែប្រែកិច្ចតែងការដោយជោគជ័យ!");
+        } else {
+          plans.unshift(planData);
+          showToast("បានបង្កើតកិច្ចតែងការថ្មីដោយជោគជ័យ!");
+        }
+
+        setStoredPlans(plans);
+        closePlanModal();
+        renderLessonPlans();
+        renderDashboard();
+      }
+
+      function editPlan(id) {
+        const plans = getStoredPlans();
+        const plan = plans.find((p) => p.id === id);
+        if (plan) {
+          openPlanModal(plan);
+        }
+      }
+
+      function deletePlan(id) {
+        // In-app confirmation
+        if (
+          window.confirm &&
+          !window.confirm("តើអ្នកពិតជាចង់លុបកិច្ចតែងការនេះមែនទេ?")
+        )
+          return;
+        let plans = getStoredPlans();
+        plans = plans.filter((p) => p.id !== id);
+        setStoredPlans(plans);
+        showToast("កិច្ចតែងការត្រូវបានលុបចេញ");
+        renderLessonPlans();
+        renderDashboard();
+      }
+
+      // Modal Control: Assignment
+      function openAssignmentModal() {
+        document.getElementById("assignment-modal").classList.remove("hidden");
+      }
+      function closeAssignmentModal() {
+        document.getElementById("assignment-modal").classList.add("hidden");
+      }
+
+      function saveAssignment(e) {
+        e.preventDefault();
+        const newAsg = {
+          id: "asg-" + Date.now(),
+          title: document.getElementById("asg-title").value,
+          subject: document.getElementById("asg-subject").value,
+          grade: document.getElementById("asg-grade").value,
+          due: document.getElementById("asg-due").value,
+          total: parseInt(document.getElementById("asg-total").value) || 35,
+          submitted: 0,
+          status: "pending",
+        };
+
+        const assignments = getStoredAssignments();
+        assignments.unshift(newAsg);
+        setStoredAssignments(assignments);
+        closeAssignmentModal();
+        renderAssignments();
+        renderDashboard();
+        showToast("បានបង្កើតកិច្ចការថ្មីជូនសិស្ស!");
+      }
+
+      function incrementSubmission(id) {
+        const list = getStoredAssignments();
+        const asg = list.find((a) => a.id === id);
+        if (asg && asg.submitted < asg.total) {
+          asg.submitted += 1;
+          setStoredAssignments(list);
+          renderAssignments();
+          renderDashboard();
+          showToast(`បានកត់ត្រាសិស្សប្រគល់ (+១)`);
+        }
+      }
+
+      function deleteAssignment(id) {
+        let list = getStoredAssignments();
+        list = list.filter((a) => a.id !== id);
+        setStoredAssignments(list);
+        renderAssignments();
+        renderDashboard();
+        showToast("បានលុបកិច្ចការរួចរាល់");
+      }
+
+      // Preview and Print Full MoEYS Standard Format
+      function previewPrintPlan(id) {
+        const plans = getStoredPlans();
+        const plan = plans.find((p) => p.id === id);
+        if (!plan) return;
+
+        const container = document.getElementById("print-modal-content");
+        container.innerHTML = `
+        <div class="text-center space-y-1 mb-6 border-b pb-4">
+          <p class="font-moul text-sm text-slate-800">ព្រះរាជាណាចក្រកម្ពុជា</p>
+          <p class="font-moul text-xs text-slate-800">ជាតិ សាសនា ព្រះមហាក្សត្រ</p>
+          <div class="w-24 h-0.5 bg-slate-800 mx-auto mt-1 mb-4"></div>
+          <h2 class="font-moul text-base text-brand-800 mt-2">កិច្ចតែងការបង្រៀន</h2>
+        </div>
+
+        <div class="grid grid-cols-2 gap-y-1.5 text-xs mb-4">
+          <div><strong>មុខវិជ្ជា៖</strong> ${plan.subject}</div>
+          <div><strong>ថ្នាក់ទី៖</strong> ${plan.grade}</div>
+          <div><strong>កាលបរិច្ឆេទ៖</strong> ${plan.date || "___/___/២០២..."}</div>
+          <div><strong>រយៈពេល៖</strong> ${plan.duration || "៥០ នាទី"}</div>
+          <div class="col-span-2"><strong>ជំពូក៖</strong> ${plan.chapter || "..."}</div>
+          <div class="col-span-2"><strong>ចំណងជើងមេរៀន៖</strong> ${plan.topic}</div>
+        </div>
+
+        <div class="border border-slate-300 p-3 rounded-lg space-y-2 mb-4 bg-slate-50">
+          <h4 class="font-bold underline text-xs">I. វត្ថុបំណង</h4>
+          <p><strong>១. ចំណេះដឹង៖</strong> ${plan.objKnowledge || "..."}</p>
+          <p><strong>២. បំណិន៖</strong> ${plan.objSkills || "..."}</p>
+          <p><strong>៣. ឥរិយាបថ៖</strong> ${plan.objAttitude || "..."}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-xs mb-4">
+          <div class="border border-slate-300 p-2.5 rounded-lg">
+            <strong>II. សម្ភារឧបទេស៖</strong>
+            <p class="mt-1">${plan.materials || "សៀវភៅពុម្ព, ក្តារខៀន"}</p>
+          </div>
+          <div class="border border-slate-300 p-2.5 rounded-lg">
+            <strong>III. ឯកសារយោង៖</strong>
+            <p class="mt-1">${plan.references || "សៀវភៅគោល"}</p>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold underline text-xs mb-2">IV. ដំណើរបង្រៀន (៥ ជំហានគរុកោសល្យ)</h4>
+          <table class="w-full border-collapse border border-slate-400 text-xs">
+            <thead>
+              <tr class="bg-slate-200">
+                <th class="border border-slate-400 p-2 w-36">ជំហានបង្រៀន</th>
+                <th class="border border-slate-400 p-2">សកម្មភាពគ្រូ</th>
+                <th class="border border-slate-400 p-2">សកម្មភាពសិស្ស</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-slate-400 p-2 font-bold bg-slate-50">ជំហានទី១<br><span class="font-normal text-[10px]">ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់</span></td>
+                <td class="border border-slate-400 p-2">${plan.step1Teacher || "- ពិនិត្យវត្តមាន និងអនាម័យ"}</td>
+                <td class="border border-slate-400 p-2">${plan.step1Student || "- ប្រធានថ្នាក់រាយការណ៍"}</td>
+              </tr>
+              <tr>
+                <td class="border border-slate-400 p-2 font-bold bg-slate-50">ជំហានទី២<br><span class="font-normal text-[10px]">រំលឹកមេរៀនចាស់</span></td>
+                <td class="border border-slate-400 p-2">${plan.step2Teacher || "- សួរសំណួរមេរៀនចាស់"}</td>
+                <td class="border border-slate-400 p-2">${plan.step2Student || "- សិស្សស្ម័គ្រចិត្តឡើងឆ្លើយ"}</td>
+              </tr>
+              <tr>
+                <td class="border border-slate-400 p-2 font-bold bg-slate-50">ជំហានទី៣<br><span class="font-normal text-[10px]">មេរៀនថ្មី & ខ្លឹមសារ</span></td>
+                <td class="border border-slate-400 p-2">
+                  <div class="font-semibold text-slate-700 mb-1">ខ្លឹមសារ៖ ${plan.step3Content || ""}</div>
+                  ${plan.step3Teacher || "- ពន្យល់ខ្លឹមសារ"}
+                </td>
+                <td class="border border-slate-400 p-2">${plan.step3Student || "- ស្តាប់ និងកត់ត្រាខ្លឹមសារសំខាន់"}</td>
+              </tr>
+              <tr>
+                <td class="border border-slate-400 p-2 font-bold bg-slate-50">ជំហានទី៤<br><span class="font-normal text-[10px]">ពង្រឹងចំណេះដឹង</span></td>
+                <td class="border border-slate-400 p-2">${plan.step4Teacher || "- ដាក់សំណួរពង្រឹង"}</td>
+                <td class="border border-slate-400 p-2">${plan.step4Student || "- ឆ្លើយសំណួរពង្រឹង"}</td>
+              </tr>
+              <tr>
+                <td class="border border-slate-400 p-2 font-bold bg-slate-50">ជំហានទី៥<br><span class="font-normal text-[10px]">បណ្តាំផ្ញើ & កិច្ចការផ្ទះ</span></td>
+                <td class="border border-slate-400 p-2">${plan.step5Teacher || "- ដាក់កិច្ចការផ្ទះ"}</td>
+                <td class="border border-slate-400 p-2">${plan.step5Student || "- កត់ត្រាកិច្ចការផ្ទះ"}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-between items-end pt-8 text-xs">
+          <div class="text-center space-y-1">
+            <p>បានឃើញ និងឯកភាព</p>
+            <p class="font-bold">នាយកសាលា / គណៈគ្រប់គ្រង</p>
+            <div class="h-16"></div>
+            <p class="text-slate-400">.............................................</p>
+          </div>
+          <div class="text-center space-y-1">
+            <p>ថ្ងៃទី...... ខែ...... ឆ្នាំ ២០២...</p>
+            <p class="font-bold">ហត្ថលេខាគ្រូបង្រៀន</p>
+            <div class="h-16"></div>
+            <p class="font-semibold text-slate-800">លោកគ្រូ សុខ ចាន់ថន</p>
+          </div>
+        </div>
+      `;
+
+        document.getElementById("print-modal").classList.remove("hidden");
+      }
+
+      function closePrintModal() {
+        document.getElementById("print-modal").classList.add("hidden");
+      }
+
+      function viewPlanByTitle(titlePart) {
+        const plans = getStoredPlans();
+        const plan = plans.find((p) => p.topic.includes(titlePart)) || plans[0];
+        if (plan) previewPrintPlan(plan.id);
+      }
+
+      function addMockResource() {
+        showToast("បានបន្ថែមឯកសារថ្មីទៅក្នុងឃ្លាំង!");
+      }
+
+      // Global Search
+      function handleGlobalSearch(query) {
+        if (!query.trim()) {
+          renderLessonPlans();
+          return;
+        }
+        switchTab("lesson-plans");
+        const plans = getStoredPlans();
+        const filtered = plans.filter(
+          (p) =>
+            p.topic.toLowerCase().includes(query.toLowerCase()) ||
+            p.subject.toLowerCase().includes(query.toLowerCase()) ||
+            p.grade.toLowerCase().includes(query.toLowerCase()),
+        );
+
+        const container = document.getElementById("plans-grid");
+        container.innerHTML = "";
+        document.getElementById("plans-count-badge").innerText =
+          `លទ្ធផលស្វែងរក: ${filtered.length}`;
+
+        if (filtered.length === 0) {
+          container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">រកមិនឃើញកិច្ចតែងការដែលត្រូវនឹង "${query}" ទេ</div>`;
+          return;
+        }
+
+        filtered.forEach((p) => {
+          const card = document.createElement("div");
+          card.className =
+            "bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm p-5 space-y-4";
+          card.innerHTML = `
+          <div class="flex justify-between">
+            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300">${p.grade}</span>
+            <span class="text-[11px] text-slate-400">${p.subject}</span>
+          </div>
+          <h4 class="font-bold text-sm text-slate-800 dark:text-white">${p.topic}</h4>
+          <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+            <button onclick="previewPrintPlan('${p.id}')" class="px-3 py-1 bg-brand-600 text-white rounded-lg text-xs font-semibold">មើល</button>
+          </div>
+        `;
+          container.appendChild(card);
+        });
+      }
+
+      // Toast Notification helper
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        const msg = document.getElementById("toast-msg");
+        msg.innerText = message;
+        toast.classList.remove("opacity-0", "pointer-events-none");
+        toast.classList.add("opacity-100");
+
+        setTimeout(() => {
+          toast.classList.remove("opacity-100");
+          toast.classList.add("opacity-0", "pointer-events-none");
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

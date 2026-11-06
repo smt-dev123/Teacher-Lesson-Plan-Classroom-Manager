@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#__nuxt {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Kantumruy Pro", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-moul {
+  font-family: "Moul", serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+/* Element Plus overrides */
+.el-menu {
+  border-right: none !important;
+}
+.el-menu-item,
+.el-sub-menu__title {
+  border-radius: 12px !important;
+  margin: 2px 8px !important;
+}
+.el-menu-item.is-active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+.el-menu-item.is-active .el-icon {
+  color: #fff !important;
+}
+
+/* Print */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

@@ -17,7 +17,7 @@
           កិច្ចតែងការគ្រូ
         </div>
         <div
-          class="truncate text-[10px] font-medium text-sky-600 dark:text-sky-400"
+          class="truncate text-[12px] font-medium text-sky-600 dark:text-sky-400"
         >
           ប្រព័ន្ធគរុកោសល្យខ្មែរ
         </div>
@@ -112,7 +112,7 @@
               <p class="text-xs font-bold text-slate-800 dark:text-white">
                 លោកគ្រូ លុយ សុមាត្រា
               </p>
-              <p class="text-[10px] text-slate-400">teacher@school.edu.kh</p>
+              <p class="text-sm text-slate-400">teacher@school.edu.kh</p>
             </div>
             <el-dropdown-item command="profile">
               <el-icon><User /></el-icon>
@@ -148,7 +148,7 @@
           <h3 class="text-base font-bold text-slate-800 dark:text-white">
             លោកគ្រូ លុយ សុមាត្រា
           </h3>
-          <p class="text-xs text-sky-600 dark:text-sky-400">
+          <p class="text-[12px] text-sky-600 dark:text-sky-400">
             គ្រូបង្រៀនកម្រិតវិទ្យាល័យ (រូបវិទ្យា & គណិតវិទ្យា)
           </p>
         </div>
@@ -267,6 +267,7 @@ import {
   Folder,
   Setting,
   User,
+  UserFilled,
   SwitchButton,
 } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
@@ -286,6 +287,8 @@ const navItems = [
   { path: "/exam-builder", label: "បង្កើតវិញ្ញាសា", icon: EditPen },
   { path: "/timetable", label: "កាលវិភាគបង្រៀន", icon: Calendar },
   { path: "/resources", label: "ឃ្លាំងឯកសារ", icon: Folder },
+  { path: "/users", label: "អ្នកប្រើប្រាស់", icon: UserFilled },
+  { path: "/settings", label: "ការកំណត់", icon: Setting },
 ];
 
 const onAcademicYearChange = (v: string) => {

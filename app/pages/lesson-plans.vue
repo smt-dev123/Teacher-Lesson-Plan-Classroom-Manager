@@ -7,7 +7,6 @@
       <div class="flex flex-wrap gap-2">
         <el-select
           v-model="gradeFilter"
-          size="small"
           placeholder="គ្រប់កម្រិតថ្នាក់"
           class="!w-40"
         >
@@ -20,7 +19,6 @@
 
         <el-select
           v-model="subjectFilter"
-          size="small"
           placeholder="គ្រប់មុខវិជ្ជា"
           class="!w-40"
         >
@@ -35,7 +33,7 @@
         <el-tag type="primary" round
           >សរុប: {{ filtered.length }} កិច្ចតែងការ</el-tag
         >
-        <el-button type="primary" size="small" @click="openCreate">
+        <el-button type="primary" @click="openCreate">
           <el-icon><Plus /></el-icon> បន្ថែមថ្មី
         </el-button>
       </div>

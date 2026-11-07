@@ -70,3 +70,63 @@ body,
     display: none !important;
   }
 }
+
+/* ===== WangEditor ===== */
+.w-e-text-container [data-slate-editor] {
+  font-family: "Kantumruy Pro", sans-serif !important;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.w-e-text-container img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 6px 0;
+}
+
+/* Dark mode override */
+.dark .w-e-toolbar,
+.dark .w-e-text-container {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border-color: #334155 !important;
+}
+.dark .w-e-bar-item button:hover {
+  background-color: #334155 !important;
+}
+.dark .w-e-text-container [data-slate-editor] {
+  color: #e2e8f0 !important;
+}
+.dark .w-e-select-list,
+.dark .w-e-drop-panel {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+/* Render preview */
+.rich-content img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 4px 0;
+}
+.rich-content p {
+  margin: 4px 0;
+}
+.rich-content strong {
+  font-weight: 700;
+}
+.rich-content em {
+  font-style: italic;
+}
+.rich-content u {
+  text-decoration: underline;
+}
+.rich-content ul,
+.rich-content ol {
+  padding-left: 20px;
+  margin: 4px 0;
+}
+.rich-content li {
+  margin: 2px 0;
+}

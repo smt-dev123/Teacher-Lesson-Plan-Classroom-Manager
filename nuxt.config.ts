@@ -1,6 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@element-plus/nuxt", "@pinia/nuxt", "@nuxtjs/tailwindcss"],
+  modules: [
+    "@element-plus/nuxt",
+    "@pinia/nuxt",
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/i18n",
+  ],
+  i18n: {
+    locales: [
+      { code: "km", name: "ភាសាខ្មែរ" },
+      { code: "en", name: "English" },
+    ],
+    defaultLocale: "km",
+    strategy: "no_prefix",
+  },
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   app: {

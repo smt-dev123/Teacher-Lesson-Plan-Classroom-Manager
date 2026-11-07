@@ -17,7 +17,7 @@
       <!-- Main content -->
       <main class="relative min-h-0 min-w-0 overflow-hidden">
         <el-scrollbar class="absolute inset-0 h-full">
-          <div class="box-border min-h-full w-full min-w-0 p-4">
+          <div class="box-border min-h-full w-full min-w-0 px-4 py-6">
             <slot />
           </div>
         </el-scrollbar>

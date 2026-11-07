@@ -3,11 +3,11 @@
     class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800"
   >
     <div>
-      <p class="text-xs font-medium text-slate-500">{{ label }}</p>
+      <p class="text-md font-medium text-slate-500">{{ label }}</p>
       <h3 class="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
         {{ value }}
       </h3>
-      <span class="mt-1 block text-[11px] font-medium" :class="textClass">{{
+      <span class="mt-1 block text-sm font-medium" :class="textClass">{{
         subtitle
       }}</span>
     </div>

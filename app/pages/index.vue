@@ -37,14 +37,14 @@
       class="rounded-2xl bg-gradient-to-r from-sky-700 to-sky-500 p-6 text-white shadow-lg"
     >
       <span
-        class="inline-block rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide"
+        class="inline-block rounded-full bg-white/20 px-2.5 py-1 text-[12px] font-semibold uppercase tracking-wide"
       >
         កាលវិភាគបង្រៀនបន្ទាប់
       </span>
       <h3 class="mt-2 text-lg font-bold md:text-xl">
         ថ្នាក់ទី៩B • រូបវិទ្យា: ច្បាប់ចលនាទី២ ញូតុន
       </h3>
-      <p class="mt-1 text-xs text-sky-100">
+      <p class="mt-1 text-sm text-sky-100">
         ⏰ ០៨:០០ - ០៨:៥០ ព្រឹក • 🚪 បន្ទប់ ២០៤
       </p>
     </div>

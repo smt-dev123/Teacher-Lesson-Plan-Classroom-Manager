@@ -5,7 +5,7 @@
     width="min(720px, 92vw)"
     top="5vh"
   >
-    <el-form :model="form" label-position="top" size="small">
+    <el-form :model="form" label-position="top">
       <!-- Type -->
       <el-form-item label="ប្រភេទសំណួរ">
         <el-radio-group v-model="form.type">
@@ -73,11 +73,7 @@
         >
           <el-radio v-model="correctId" :value="opt.id" />
           <span class="text-xs font-bold">{{ opt.id.toUpperCase() }}.</span>
-          <el-input
-            v-model="opt.text"
-            size="small"
-            placeholder="អត្ថបទជម្រើស"
-          />
+          <el-input v-model="opt.text" placeholder="អត្ថបទជម្រើស" />
         </div>
       </div>
 

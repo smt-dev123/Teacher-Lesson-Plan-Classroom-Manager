@@ -13,32 +13,22 @@
       <el-table-column label="ប្រគល់" width="140">
         <template #default="{ row }">
           <strong>{{ row.submitted }}</strong> / {{ row.total }}
-          <span class="ml-1 text-[10px] text-slate-400">
+          <span class="ml-1 text-sm text-slate-400">
             ({{ Math.round((row.submitted / row.total) * 100) }}%)
           </span>
         </template>
       </el-table-column>
       <el-table-column label="ស្ថានភាព" width="130">
         <template #default="{ row }">
-          <el-tag
-            :type="row.submitted === row.total ? 'success' : 'warning'"
-            size="small"
-          >
+          <el-tag :type="row.submitted === row.total ? 'success' : 'warning'">
             {{ row.submitted === row.total ? "រួចរាល់" : "កំពុងប្រមូល" }}
           </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="សកម្មភាព" width="180" align="right">
         <template #default="{ row }">
-          <el-button size="small" @click="$emit('increment', row.id)"
-            >+១</el-button
-          >
-          <el-button
-            size="small"
-            text
-            type="danger"
-            @click="$emit('delete', row.id)"
-          >
+          <el-button @click="$emit('increment', row.id)">+១</el-button>
+          <el-button text type="danger" @click="$emit('delete', row.id)">
             <el-icon><Delete /></el-icon>
           </el-button>
         </template>

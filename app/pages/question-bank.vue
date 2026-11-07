@@ -5,7 +5,7 @@
       <div
         class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800"
       >
-        <p class="text-[11px] text-slate-500">សំណួរសរុប</p>
+        <p class="text-sm">សំណួរសរុប</p>
         <p class="mt-1 text-2xl font-bold text-slate-800 dark:text-white">
           {{ stats.total }}
         </p>
@@ -13,7 +13,7 @@
       <div
         class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800"
       >
-        <p class="text-[11px] text-slate-500">ពហុជម្រើស</p>
+        <p class="text-sm">ពហុជម្រើស</p>
         <p class="mt-1 text-2xl font-bold text-sky-600">
           {{ stats.byType.mcq }}
         </p>
@@ -21,7 +21,7 @@
       <div
         class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800"
       >
-        <p class="text-[11px] text-slate-500">ត្រូវ/ខុស</p>
+        <p class="text-sm">ត្រូវ/ខុស</p>
         <p class="mt-1 text-2xl font-bold text-emerald-600">
           {{ stats.byType.truefalse }}
         </p>
@@ -29,7 +29,7 @@
       <div
         class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800"
       >
-        <p class="text-[11px] text-slate-500">ខ្លី / អត្ថបទ</p>
+        <p class="text-sm">ខ្លី / អត្ថបទ</p>
         <p class="mt-1 text-2xl font-bold text-amber-600">
           {{ stats.byType.short }} / {{ stats.byType.essay }}
         </p>

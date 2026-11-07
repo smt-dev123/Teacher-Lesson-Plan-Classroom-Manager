@@ -24,7 +24,7 @@
           </span>
         </template>
 
-        <el-form :model="form" label-position="top" size="small" class="pt-2">
+        <el-form :model="form" label-position="top" class="pt-2">
           <el-row :gutter="12">
             <el-col :md="6" :sm="12">
               <el-form-item label="មុខវិជ្ជា" required>
@@ -113,7 +113,7 @@
           <div class="space-y-3">
             <div>
               <label
-                class="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
                 ១. ចំណេះដឹង (Knowledge)
               </label>
@@ -125,7 +125,7 @@
             </div>
             <div>
               <label
-                class="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
                 ២. បំណិន (Skills)
               </label>
@@ -137,7 +137,7 @@
             </div>
             <div>
               <label
-                class="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
                 ៣. ឥរិយាបថ (Attitude)
               </label>
@@ -175,7 +175,6 @@
             <el-button
               v-for="(step, i) in steps"
               :key="i"
-              size="small"
               :type="currentStep === i ? 'primary' : 'default'"
               @click="currentStep = i"
             >
@@ -183,16 +182,16 @@
             </el-button>
           </div>
 
-          <p class="mb-2 text-xs font-bold text-sky-600">
+          <p class="mb-2 text-sm font-bold text-sky-600">
             ជំហានទី{{ khNum[currentStep] }}៖ {{ steps[currentStep]?.title }}
           </p>
 
           <!-- Content -->
           <div v-show="currentStep === 2" class="mb-3">
             <label
-              class="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300"
+              class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
             >
-              ខ្លឹមសារមេរៀន (អាចបញ្ចូលរូបភាព, អក្សរដិត, បញ្ជី)
+              ខ្លឹមសារមេរៀន
             </label>
             <RichEditor
               v-model="form.step3Content"
@@ -204,7 +203,7 @@
           <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
             <div>
               <label
-                class="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
                 សកម្មភាពគ្រូ
               </label>
@@ -218,7 +217,7 @@
             </div>
             <div>
               <label
-                class="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300"
+                class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
                 សកម្មភាពសិស្ស
               </label>
@@ -234,15 +233,10 @@
 
           <!-- Prev / Next -->
           <div class="mt-3 flex justify-between">
-            <el-button
-              size="small"
-              :disabled="currentStep === 0"
-              @click="currentStep--"
-            >
+            <el-button :disabled="currentStep === 0" @click="currentStep--">
               <el-icon><ArrowLeft /></el-icon> មុន
             </el-button>
             <el-button
-              size="small"
               type="primary"
               :disabled="currentStep === steps.length - 1"
               @click="currentStep++"
@@ -257,14 +251,18 @@
     <!-- ========== Footer ========== -->
     <template #footer>
       <div class="flex items-center justify-between">
-        <div class="text-[11px] text-slate-500">
+        <div class="text-sm text-slate-500">
           <template v-if="!isValid">
-            <el-icon class="text-amber-500"><Warning /></el-icon>
-            សូមបំពេញ មុខវិជ្ជា និង ចំណងជើងមេរៀន
+            <div class="flex items-center gap-1 text-amber-500">
+              <el-icon class="text-amber-500"><Warning /></el-icon>
+              <p>សូមបំពេញ មុខវិជ្ជា និង ចំណងជើងមេរៀន</p>
+            </div>
           </template>
           <template v-else>
-            <el-icon class="text-emerald-500"><CircleCheck /></el-icon>
-            រួចរាល់ក្នុងការរក្សាទុក
+            <div class="flex items-center gap-1 text-emerald-500">
+              <el-icon class="text-emerald-500"><CircleCheck /></el-icon>
+              <p>រួចរាល់ក្នុងការរក្សាទុក</p>
+            </div>
           </template>
         </div>
 

@@ -2,9 +2,9 @@
   <el-dialog
     v-model="visible"
     title="បង្កើតកិច្ចការថ្មី"
-    width="min(520px, 92vw)"
+    width="min(720px, 92vw)"
   >
-    <el-form :model="form" label-position="top" size="small">
+    <el-form :model="form" label-position="top">
       <el-form-item label="ចំណងជើង" required>
         <el-input v-model="form.title" />
       </el-form-item>

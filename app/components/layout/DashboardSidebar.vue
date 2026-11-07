@@ -72,15 +72,24 @@
       >
         <div
           class="flex w-full cursor-pointer items-center gap-2.5 rounded-xl p-2 transition hover:bg-slate-100 dark:hover:bg-slate-700/60"
-          :class="layoutStore.isCollapse ? 'justify-center px-0' : 'bg-slate-50 dark:bg-slate-700/40'"
+          :class="
+            layoutStore.isCollapse
+              ? 'justify-center px-0'
+              : 'bg-slate-50 dark:bg-slate-700/40'
+          "
         >
           <el-avatar
             :size="36"
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
             class="shrink-0 ring-2 ring-sky-500/30"
           />
-          <div v-show="!layoutStore.isCollapse" class="min-w-0 flex-1 text-left">
-            <h4 class="truncate text-xs font-bold text-slate-800 dark:text-white">
+          <div
+            v-show="!layoutStore.isCollapse"
+            class="min-w-0 flex-1 text-left"
+          >
+            <h4
+              class="truncate text-xs font-bold text-slate-800 dark:text-white"
+            >
               លោកគ្រូ លុយ សុមាត្រា
             </h4>
             <p class="truncate text-[10px] text-slate-500">
@@ -97,7 +106,9 @@
 
         <template #dropdown>
           <el-dropdown-menu class="min-w-[200px]">
-            <div class="border-b border-slate-100 px-3 py-2 dark:border-slate-700">
+            <div
+              class="border-b border-slate-100 px-3 py-2 dark:border-slate-700"
+            >
               <p class="text-xs font-bold text-slate-800 dark:text-white">
                 លោកគ្រូ លុយ សុមាត្រា
               </p>
@@ -143,27 +154,45 @@
         </div>
       </div>
 
-      <div class="mt-5 space-y-2.5 rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-800/60">
-        <div class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700">
+      <div
+        class="mt-5 space-y-2.5 rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-800/60"
+      >
+        <div
+          class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700"
+        >
           <span class="text-slate-500">អ៊ីមែល៖</span>
-          <span class="font-semibold text-slate-700 dark:text-slate-300">teacher@school.edu.kh</span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300"
+            >teacher@school.edu.kh</span
+          >
         </div>
-        <div class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700">
+        <div
+          class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700"
+        >
           <span class="text-slate-500">លេខទូរស័ព្ទ៖</span>
-          <span class="font-semibold text-slate-700 dark:text-slate-300">+855 12 345 678</span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300"
+            >+855 12 345 678</span
+          >
         </div>
-        <div class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700">
+        <div
+          class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700"
+        >
           <span class="text-slate-500">ថ្នាក់ទទួលបន្ទុក៖</span>
-          <span class="font-semibold text-slate-700 dark:text-slate-300">ថ្នាក់ទី១០A, ១១B, ១២A</span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300"
+            >ថ្នាក់ទី១០A, ១១B, ១២A</span
+          >
         </div>
         <div class="flex justify-between">
           <span class="text-slate-500">ឆ្នាំសិក្សា៖</span>
-          <span class="font-semibold text-sky-600 dark:text-sky-400">{{ layoutStore.currentAcademicYearLabel }}</span>
+          <span class="font-semibold text-sky-600 dark:text-sky-400">{{
+            layoutStore.currentAcademicYearLabel
+          }}</span>
         </div>
       </div>
 
       <template #footer>
-        <el-button type="primary" @click="profileDialogVisible = false">យល់ព្រម</el-button>
+        <el-button type="primary" @click="profileDialogVisible = false"
+          >យល់ព្រម</el-button
+        >
       </template>
     </el-dialog>
 
@@ -175,10 +204,16 @@
       align-center
     >
       <div class="space-y-4">
-        <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+        <div
+          class="flex items-center justify-between rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60"
+        >
           <div>
-            <div class="text-xs font-bold text-slate-800 dark:text-white">របៀបពន្លឺ/ងងឹត (Theme)</div>
-            <div class="text-[11px] text-slate-500">ជ្រើសរើសរូបរាង Dark Mode ឬ Light Mode</div>
+            <div class="text-xs font-bold text-slate-800 dark:text-white">
+              របៀបពន្លឺ/ងងឹត (Theme)
+            </div>
+            <div class="text-[11px] text-slate-500">
+              ជ្រើសរើសរូបរាង Dark Mode ឬ Light Mode
+            </div>
           </div>
           <el-switch
             :model-value="layoutStore.isDark"
@@ -189,10 +224,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60">
+        <div
+          class="flex items-center justify-between rounded-xl bg-slate-50 p-3 dark:bg-slate-800/60"
+        >
           <div>
-            <div class="text-xs font-bold text-slate-800 dark:text-white">ទំហំ Sidebar</div>
-            <div class="text-[11px] text-slate-500">បង្រួម ឬពង្រីករបារចំហៀង</div>
+            <div class="text-xs font-bold text-slate-800 dark:text-white">
+              ទំហំ Sidebar
+            </div>
+            <div class="text-[11px] text-slate-500">
+              បង្រួម ឬពង្រីករបារចំហៀង
+            </div>
           </div>
           <el-switch
             :model-value="layoutStore.isCollapse"
@@ -205,7 +246,9 @@
       </div>
 
       <template #footer>
-        <el-button type="primary" @click="settingsDialogVisible = false">បិទ</el-button>
+        <el-button type="primary" @click="settingsDialogVisible = false"
+          >បិទ</el-button
+        >
       </template>
     </el-dialog>
   </aside>
@@ -239,7 +282,7 @@ const navItems = [
   { path: "/", label: "ផ្ទាំងគ្រប់គ្រង", icon: DataBoard },
   { path: "/lesson-plans", label: "កិច្ចតែងការបង្រៀន", icon: Reading },
   { path: "/lessons", label: "មេរៀន & កិច្ចការ", icon: List },
-  { path: "/question-bank", label: "ធនាគារសំណួរ", icon: Files },
+  { path: "/question-bank", label: "បណ្ដុំសំណួរ", icon: Files },
   { path: "/exam-builder", label: "បង្កើតវិញ្ញាសា", icon: EditPen },
   { path: "/timetable", label: "កាលវិភាគបង្រៀន", icon: Calendar },
   { path: "/resources", label: "ឃ្លាំងឯកសារ", icon: Folder },
@@ -263,7 +306,6 @@ const handleUserCommand = (cmd: string) => {
 </script>
 
 <style scoped>
-/* ✅ ស្អាតសម្រាប់ dropdown */
 .academic-year-select :deep(.el-select__wrapper) {
   border-radius: 10px;
   background-color: #f8fafc;

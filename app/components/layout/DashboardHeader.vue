@@ -6,7 +6,11 @@
     <!-- Left: Collapse / Expand toggle + Page title -->
     <div class="flex items-center gap-3">
       <el-tooltip
-        :content="layoutStore.isCollapse ? 'ពង្រីករបារចំហៀង (Expand)' : 'បង្រួមរបារចំហៀង (Collapse)'"
+        :content="
+          layoutStore.isCollapse
+            ? 'ពង្រីករបារចំហៀង (Expand)'
+            : 'បង្រួមរបារចំហៀង (Collapse)'
+        "
         placement="bottom"
       >
         <button
@@ -47,7 +51,9 @@
               v-for="item in layoutStore.locales"
               :key="item.code"
               :command="item.code"
-              :class="{ '!text-sky-600 font-bold': layoutStore.locale === item.code }"
+              :class="{
+                '!text-sky-600 font-bold': layoutStore.locale === item.code,
+              }"
             >
               <div class="flex items-center gap-2">
                 <span class="text-base">{{ item.flag }}</span>
@@ -60,7 +66,9 @@
 
       <!-- Maximize / FullScreen Toggle -->
       <el-tooltip
-        :content="isFullscreen ? 'បង្រួមអេក្រង់' : 'ពង្រីកពេញអេក្រង់ (Maximize)'"
+        :content="
+          isFullscreen ? 'បង្រួមអេក្រង់' : 'ពង្រីកពេញអេក្រង់ (Maximize)'
+        "
         placement="bottom"
       >
         <button
@@ -77,7 +85,11 @@
 
       <!-- Dark Mode Toggle -->
       <el-tooltip
-        :content="layoutStore.isDark ? 'ប្តូរទៅរបៀបពន្លឺ (Light)' : 'ប្តូរទៅរបៀបងងឹត (Dark)'"
+        :content="
+          layoutStore.isDark
+            ? 'ប្តូរទៅរបៀបពន្លឺ (Light)'
+            : 'ប្តូរទៅរបៀបងងឹត (Dark)'
+        "
         placement="bottom"
       >
         <button
@@ -132,7 +144,7 @@ const isFullscreen = ref(false);
 const titleMap: Record<string, [string, string]> = {
   "/": ["ផ្ទាំងគ្រប់គ្រងទូទៅ", "ស្វាគមន៍មកកាន់ប្រព័ន្ធរៀបចំការបង្រៀន"],
   "/lesson-plans": ["កិច្ចតែងការបង្រៀន", "កិច្ចតែងការតាមស្តង់ដារ ៥ ជំហាន"],
-  "/question-bank": ["ធនាគារសំណួរ", "គ្រប់គ្រងសំណួរតាមមុខវិជ្ជា & កម្រិត"],
+  "/question-bank": ["បណ្ដុំសំណួរ", "គ្រប់គ្រងសំណួរតាមមុខវិជ្ជា & កម្រិត"],
   "/exam-builder": ["បង្កើតវិញ្ញាសា", "រៀបចំវិញ្ញាសាប្រឡងពីធនាគារ"],
   "/lessons": ["មេរៀន & កិច្ចការសិស្ស", "តាមដានស្ថានភាពប្រគល់កិច្ចការ"],
   "/timetable": ["កាលវិភាគបង្រៀន", "តារាងម៉ោងបង្រៀនប្រចាំសប្តាហ៍"],

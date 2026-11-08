@@ -347,7 +347,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import {
   School,
   User,
@@ -363,6 +363,7 @@ import { useLayoutStore } from "~/stores/layout";
 const layoutStore = useLayoutStore();
 
 const activeTab = ref("school");
+const schoolId = ref("sch-1");
 
 const tabs = [
   { id: "school", label: "ព័ត៌មានសាលារៀន", icon: School },
@@ -372,13 +373,13 @@ const tabs = [
 ];
 
 const schoolForm = reactive({
-  name: "វិទ្យាល័យ ព្រះស៊ីសុវត្ថិ",
+  name: "វិទ្យាល័យ ហ៊ុន សែន មិត្តភាព",
   level: "វិទ្យាល័យ",
   province: "រាជធានីភ្នំពេញ",
-  district: "ខណ្ឌដូនពេញ",
-  phone: "023 210 123",
-  email: "sisowath.highschool@moeys.gov.kh",
-  address: "វិថីព្រះនរោត្តម សង្កាត់ជ័យជំនះ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ",
+  district: "ខណ្ឌ៧មករា",
+  phone: "023 880 990",
+  email: "info@mittapheap.edu.kh",
+  address: "រាជធានីភ្នំពេញ",
 });
 
 const profileForm = reactive({
@@ -389,8 +390,48 @@ const profileForm = reactive({
   bio: "គ្រូបង្រៀនកម្រិតវិទ្យាល័យ បទពិសោធន៍បង្រៀន ៨ ឆ្នាំ ផ្នែករូបវិទ្យា",
 });
 
-const saveAllSettings = () => {
-  ElMessage.success("បានរក្សាទុកការកំណត់ប្រព័ន្ធដោយជោគជ័យ!");
+const loadSchoolData = async () => {
+  try {
+    const res = await $fetch<{ success: boolean; data: any }>("/api/schools");
+    if (res?.data) {
+      schoolId.value = res.data.id || "sch-1";
+      Object.assign(schoolForm, {
+        name: res.data.name || schoolForm.name,
+        level: res.data.level || schoolForm.level,
+        province: res.data.province || schoolForm.province,
+        district: res.data.district || schoolForm.district,
+        phone: res.data.phone || schoolForm.phone,
+        email: res.data.email || schoolForm.email,
+        address: res.data.district ? `${res.data.district}, ${res.data.province}` : schoolForm.address,
+      });
+    }
+  } catch (err) {
+    console.error("Failed to load school data:", err);
+  }
+};
+
+onMounted(() => {
+  loadSchoolData();
+});
+
+const saveAllSettings = async () => {
+  try {
+    await $fetch(`/api/schools/${schoolId.value}`, {
+      method: "PUT",
+      body: {
+        name: schoolForm.name,
+        level: schoolForm.level,
+        province: schoolForm.province,
+        district: schoolForm.district,
+        phone: schoolForm.phone,
+        email: schoolForm.email,
+      },
+    });
+    ElMessage.success("បានរក្សាទុកព័ត៌មានសាលារៀន និងការកំណត់ដោយជោគជ័យ!");
+  } catch (err) {
+    console.error("Save settings error:", err);
+    ElMessage.error("មានបញ្ហាក្នុងការរក្សាទុកការកំណត់");
+  }
 };
 
 const exportData = (type: string) => {

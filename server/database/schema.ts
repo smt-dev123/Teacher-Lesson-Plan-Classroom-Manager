@@ -1,7 +1,54 @@
-import { pgTable, text, timestamp, integer, jsonb, varchar } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  integer,
+  jsonb,
+  varchar,
+  boolean,
+} from "drizzle-orm/pg-core";
+
+export const schools = pgTable("schools", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  name: text("name").notNull(),
+  code: text("code").default(""),
+  level: text("level").default("វិទ្យាល័យ"),
+  province: text("province").default("រាជធានីភ្នំពេញ"),
+  district: text("district").default(""),
+  phone: text("phone").default(""),
+  email: text("email").default(""),
+  logo: text("logo").default(""),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const academicYears = pgTable("academic_years", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  name: text("name").notNull(), // e.g. "2024 - 2025"
+  code: text("code").notNull(), // e.g. "2024-2025"
+  startDate: text("start_date").default(""),
+  endDate: text("end_date").default(""),
+  isCurrent: boolean("is_current").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const subjects = pgTable("subjects", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
+  name: text("name").notNull(), // ឧ. រូបវិទ្យា
+  code: text("code").default(""), // ឧ. PHY
+  grades: jsonb("grades").default([]), // ["ថ្នាក់ទី៧", "ថ្នាក់ទី៨", "ថ្នាក់ទី៩", "ថ្នាក់ទី១០", "ថ្នាក់ទី១១", "ថ្នាក់ទី១២"]
+  color: text("color").default("#0284c7"),
+  description: text("description").default(""),
+  totalHours: integer("total_hours").default(60),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
 
 export const lessonPlans = pgTable("lesson_plans", {
   id: varchar("id", { length: 64 }).primaryKey(),
+  schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
+  academicYear: text("academic_year").default("2024-2025").notNull(),
   subject: text("subject").notNull(),
   grade: text("grade").notNull(),
   chapter: text("chapter").default(""),
@@ -30,6 +77,7 @@ export const lessonPlans = pgTable("lesson_plans", {
 
 export const users = pgTable("users", {
   id: varchar("id", { length: 64 }).primaryKey(),
+  schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").default(""),
@@ -41,6 +89,8 @@ export const users = pgTable("users", {
 
 export const assignments = pgTable("assignments", {
   id: varchar("id", { length: 64 }).primaryKey(),
+  schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
+  academicYear: text("academic_year").default("2024-2025"),
   title: text("title").notNull(),
   subject: text("subject").notNull(),
   grade: text("grade").notNull(),
@@ -67,6 +117,12 @@ export const questions = pgTable("questions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export type SchoolRecord = typeof schools.$inferSelect;
+export type InsertSchool = typeof schools.$inferInsert;
+export type AcademicYearRecord = typeof academicYears.$inferSelect;
+export type InsertAcademicYear = typeof academicYears.$inferInsert;
+export type SubjectRecord = typeof subjects.$inferSelect;
+export type InsertSubject = typeof subjects.$inferInsert;
 export type LessonPlanRecord = typeof lessonPlans.$inferSelect;
 export type InsertLessonPlan = typeof lessonPlans.$inferInsert;
 export type UserRecord = typeof users.$inferSelect;

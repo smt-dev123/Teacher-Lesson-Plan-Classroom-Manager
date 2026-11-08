@@ -28,7 +28,34 @@
           <el-row :gutter="12">
             <el-col :md="6" :sm="12">
               <el-form-item label="មុខវិជ្ជា" required>
-                <el-input v-model="form.subject" placeholder="ឧ. រូបវិទ្យា" />
+                <el-select
+                  v-model="form.subject"
+                  filterable
+                  allow-create
+                  default-first-option
+                  placeholder="ជ្រើសរើសមុខវិជ្ជា"
+                  class="w-full"
+                >
+                  <el-option
+                    v-for="s in subjects"
+                    :key="s.id"
+                    :label="s.name"
+                    :value="s.name"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="flex items-center gap-2">
+                        <span
+                          class="h-2 w-2 rounded-full"
+                          :style="{ backgroundColor: s.color || '#0284c7' }"
+                        />
+                        <span>{{ s.name }}</span>
+                      </span>
+                      <span v-if="s.code" class="text-xs text-slate-400">
+                        {{ s.code }}
+                      </span>
+                    </div>
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :md="6" :sm="12">
@@ -290,6 +317,12 @@ import {
   Warning,
 } from "@element-plus/icons-vue";
 import type { LessonPlan } from "~/types";
+import { useSubjects } from "~/composables/useSubjects";
+
+const { subjects, load: loadSubjects } = useSubjects();
+onMounted(() => {
+  loadSubjects();
+});
 
 const props = defineProps<{ modelValue: boolean; plan: LessonPlan | null }>();
 const emit = defineEmits<{

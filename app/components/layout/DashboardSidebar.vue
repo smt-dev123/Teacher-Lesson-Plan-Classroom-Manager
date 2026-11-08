@@ -269,6 +269,7 @@ import {
   User,
   UserFilled,
   SwitchButton,
+  Collection,
 } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { useLayoutStore } from "~/stores/layout";
@@ -282,6 +283,7 @@ const settingsDialogVisible = ref(false);
 const navItems = [
   { path: "/", label: "ផ្ទាំងគ្រប់គ្រង", icon: DataBoard },
   { path: "/lesson-plans", label: "កិច្ចតែងការបង្រៀន", icon: Reading },
+  { path: "/subjects", label: "មុខវិជ្ជា", icon: Collection },
   { path: "/lessons", label: "មេរៀន & កិច្ចការ", icon: List },
   { path: "/question-bank", label: "បណ្ដុំសំណួរ", icon: Files },
   { path: "/exam-builder", label: "បង្កើតវិញ្ញាសា", icon: EditPen },

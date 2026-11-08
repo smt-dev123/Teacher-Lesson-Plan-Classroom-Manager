@@ -45,7 +45,12 @@
         <div><strong>មុខវិជ្ជា៖</strong> {{ plan.subject }}</div>
         <div><strong>ថ្នាក់ទី៖</strong> {{ plan.grade }}</div>
         <div><strong>កាលបរិច្ឆេទ៖</strong> {{ plan.date }}</div>
-        <div><strong>រយៈពេល៖</strong> {{ plan.duration }}</div>
+        <div>
+          <strong>រយៈពេល៖</strong> {{ plan.duration }}
+          <span v-if="(plan as any).academicYear" class="text-slate-500 font-normal ml-2">
+            (ឆ្នាំសិក្សា៖ {{ (plan as any).academicYear }})
+          </span>
+        </div>
         <div class="col-span-2"><strong>ជំពូក៖</strong> {{ plan.chapter }}</div>
         <div class="col-span-2">
           <strong>ចំណងជើងមេរៀន៖</strong>

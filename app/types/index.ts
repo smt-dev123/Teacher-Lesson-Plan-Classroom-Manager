@@ -1,5 +1,7 @@
 export interface LessonPlan {
   id: string;
+  schoolId?: string;
+  academicYear?: string;
   subject: string;
   grade: string;
   date: string;
@@ -22,6 +24,39 @@ export interface LessonPlan {
   step4Student: string;
   step5Teacher: string;
   step5Student: string;
+}
+
+export interface Subject {
+  id: string;
+  schoolId?: string;
+  name: string;
+  code?: string;
+  grades?: string[];
+  color?: string;
+  description?: string;
+  totalHours?: number;
+  createdAt?: string;
+}
+
+export interface School {
+  id: string;
+  name: string;
+  code?: string;
+  level?: string;
+  province?: string;
+  district?: string;
+  phone?: string;
+  email?: string;
+  logo?: string;
+}
+
+export interface AcademicYear {
+  id: string;
+  name: string;
+  code: string;
+  startDate?: string;
+  endDate?: string;
+  isCurrent?: boolean;
 }
 
 export interface Assignment {

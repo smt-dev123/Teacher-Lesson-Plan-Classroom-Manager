@@ -1,60 +1,122 @@
 <template>
   <div class="space-y-5">
-    <!-- Filters -->
+    <!-- Filters & Search Bar -->
     <div
       class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:flex-row md:items-center md:justify-between"
     >
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-1 flex-wrap items-center gap-2">
+        <!-- API Search Input -->
+        <el-input
+          v-model="searchQuery"
+          placeholder="ស្វែងរកចំណងជើងមេរៀន, ជំពូក, មុខវិជ្ជា..."
+          class="!w-64"
+          clearable
+          @input="onSearchInput"
+          @clear="onSearchInput"
+        >
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
+        </el-input>
+
+        <!-- Grade Filter -->
         <el-select
           v-model="gradeFilter"
           placeholder="គ្រប់កម្រិតថ្នាក់"
           class="!w-40"
+          @change="onFilterChange"
         >
           <el-option label="គ្រប់កម្រិតថ្នាក់" value="all" />
           <el-option label="ថ្នាក់ទី៧" value="ថ្នាក់ទី៧" />
           <el-option label="ថ្នាក់ទី៨" value="ថ្នាក់ទី៨" />
           <el-option label="ថ្នាក់ទី៩" value="ថ្នាក់ទី៩" />
           <el-option label="ថ្នាក់ទី១០" value="ថ្នាក់ទី១០" />
+          <el-option label="ថ្នាក់ទី១១" value="ថ្នាក់ទី១១" />
+          <el-option label="ថ្នាក់ទី១២" value="ថ្នាក់ទី១២" />
         </el-select>
 
+        <!-- Dynamic Subjects Filter from API -->
         <el-select
           v-model="subjectFilter"
           placeholder="គ្រប់មុខវិជ្ជា"
-          class="!w-40"
+          class="!w-44"
+          clearable
+          @change="onFilterChange"
         >
           <el-option label="គ្រប់មុខវិជ្ជា" value="all" />
-          <el-option label="រូបវិទ្យា" value="រូបវិទ្យា" />
-          <el-option label="គណិតវិទ្យា" value="គណិតវិទ្យា" />
-          <el-option label="គីមីវិទ្យា" value="គីមីវិទ្យា" />
+          <el-option
+            v-for="s in subjects"
+            :key="s.id"
+            :label="s.name"
+            :value="s.name"
+          />
         </el-select>
       </div>
 
       <div class="flex items-center gap-2">
-        <el-tag type="primary" round
-          >សរុប: {{ filtered.length }} កិច្ចតែងការ</el-tag
-        >
+        <el-tag type="primary" round effect="light">
+          សរុប: {{ pagination.total }} កិច្ចតែងការ
+        </el-tag>
         <el-button type="primary" @click="openCreate">
           <el-icon><Plus /></el-icon> បន្ថែមថ្មី
         </el-button>
       </div>
     </div>
 
-    <!-- Cards -->
-    <div
-      v-if="filtered.length"
-      class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
-    >
-      <PlanCard
-        v-for="p in filtered"
-        :key="p.id"
-        :plan="p"
-        @edit="openEdit"
-        @delete="onDelete"
-        @view="openPrint"
-        @download-docx="handleDownloadDocx"
+    <!-- Cards Grid with Loading State -->
+    <div v-loading="loading">
+      <div
+        v-if="plans.length"
+        class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <PlanCard
+          v-for="p in plans"
+          :key="p.id"
+          :plan="p"
+          @edit="openEdit"
+          @delete="onDelete"
+          @view="openPrint"
+          @download-docx="handleDownloadDocx"
+        />
+      </div>
+      <el-empty
+        v-else-if="!loading"
+        description="មិនមានកិច្ចតែងការតាមការស្វែងរកឡើយ"
       />
     </div>
-    <el-empty v-else description="មិនមានកិច្ចតែងការតាមការស្វែងរក" />
+
+    <!-- Pagination from API -->
+    <div
+      v-if="pagination.total > 0"
+      class="flex flex-col items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-row"
+    >
+      <div class="text-xs text-slate-500">
+        បង្ហាញពី
+        <span class="font-bold text-slate-700 dark:text-slate-200">
+          {{ (pagination.page - 1) * pagination.limit + 1 }}
+        </span>
+        ដល់
+        <span class="font-bold text-slate-700 dark:text-slate-200">
+          {{ Math.min(pagination.page * pagination.limit, pagination.total) }}
+        </span>
+        នៃសរុប
+        <span class="font-bold text-sky-600 dark:text-sky-400">
+          {{ pagination.total }}
+        </span>
+        កិច្ចតែងការ
+      </div>
+
+      <el-pagination
+        v-model:current-page="page"
+        v-model:page-size="limit"
+        :page-sizes="[6, 9, 12, 18, 24]"
+        :total="pagination.total"
+        layout="sizes, prev, pager, next, jumper"
+        background
+        @current-change="onPageChange"
+        @size-change="onSizeChange"
+      />
+    </div>
 
     <!-- Modals -->
     <PlanFormModal v-model="formVisible" :plan="editingPlan" @save="onSave" />
@@ -63,30 +125,76 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
-import { Plus } from "@element-plus/icons-vue";
+import { onMounted, ref, watch } from "vue";
+import { Plus, Search } from "@element-plus/icons-vue";
 import type { LessonPlan } from "~/types";
 import { useLessonPlans } from "~/composables/useLessonPlans";
+import { useSubjects } from "~/composables/useSubjects";
+import { useLayoutStore } from "~/stores/layout";
 import { ElMessage, ElMessageBox } from "element-plus";
 import PlanCard from "~/components/plans/PlanCard.vue";
 import PlanFormModal from "~/components/plans/PlanFormModal.vue";
 import PlanPrintModal from "~/components/plans/PlanPrintModal.vue";
 import { exportLessonPlanToDocx } from "~/utils/exportLessonPlanDocx";
 
-const { plans, load, add, update, remove, getById } = useLessonPlans();
+const layoutStore = useLayoutStore();
+const { plans, loading, pagination, load, add, update, remove, getById } =
+  useLessonPlans();
+const { subjects, load: loadSubjects } = useSubjects();
 
-onMounted(load);
-
+const searchQuery = ref("");
 const gradeFilter = ref("all");
 const subjectFilter = ref("all");
+const page = ref(1);
+const limit = ref(9);
 
-const filtered = computed(() =>
-  plans.value.filter((p) => {
-    const g = gradeFilter.value === "all" || p.grade === gradeFilter.value;
-    const s =
-      subjectFilter.value === "all" || p.subject.includes(subjectFilter.value);
-    return g && s;
-  }),
+const fetchPlans = () => {
+  load({
+    page: page.value,
+    limit: limit.value,
+    search: searchQuery.value,
+    grade: gradeFilter.value,
+    subject: subjectFilter.value,
+    academicYear: layoutStore.academicYear,
+  });
+};
+
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+const onSearchInput = () => {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    page.value = 1;
+    fetchPlans();
+  }, 300);
+};
+
+const onFilterChange = () => {
+  page.value = 1;
+  fetchPlans();
+};
+
+const onPageChange = (newPage: number) => {
+  page.value = newPage;
+  fetchPlans();
+};
+
+const onSizeChange = (newSize: number) => {
+  limit.value = newSize;
+  page.value = 1;
+  fetchPlans();
+};
+
+onMounted(() => {
+  fetchPlans();
+  loadSubjects();
+});
+
+watch(
+  () => layoutStore.academicYear,
+  () => {
+    page.value = 1;
+    fetchPlans();
+  }
 );
 
 const formVisible = ref(false);
@@ -104,15 +212,21 @@ const openEdit = (id: string) => {
   formVisible.value = true;
 };
 
-const onSave = (plan: LessonPlan) => {
+const onSave = async (plan: LessonPlan) => {
+  const planData = {
+    ...plan,
+    academicYear: layoutStore.academicYear,
+    schoolId: "sch-1",
+  };
   if (editingPlan.value) {
-    update(plan);
+    await update(planData);
     ElMessage.success("បានកែប្រែដោយជោគជ័យ!");
   } else {
-    add(plan);
+    await add(planData);
     ElMessage.success("បានបង្កើតថ្មីដោយជោគជ័យ!");
   }
   formVisible.value = false;
+  fetchPlans();
 };
 
 const onDelete = async (id: string) => {
@@ -122,8 +236,9 @@ const onDelete = async (id: string) => {
       confirmButtonText: "លុប",
       cancelButtonText: "បោះបង់",
     });
-    remove(id);
+    await remove(id);
     ElMessage.success("បានលុបរួចរាល់");
+    fetchPlans();
   } catch {}
 };
 

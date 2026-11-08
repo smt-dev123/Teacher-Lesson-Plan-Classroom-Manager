@@ -17,6 +17,8 @@ export default defineEventHandler(async (event) => {
     .values({
       ...body,
       id,
+      schoolId: body.schoolId || "sch-1",
+      academicYear: body.academicYear || "2024-2025",
       updatedAt: new Date(),
     })
     .returning();

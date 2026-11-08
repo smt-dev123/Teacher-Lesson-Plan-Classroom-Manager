@@ -1,8 +1,27 @@
 import type { LessonPlan } from "~/types";
 
+export interface LessonPlanPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface LessonPlanFilterParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  grade?: string;
+  subject?: string;
+  academicYear?: string;
+  schoolId?: string;
+}
+
 const defaultPlans: LessonPlan[] = [
   {
     id: "plan-1",
+    schoolId: "sch-1",
+    academicYear: "2024-2025",
     subject: "រូបវិទ្យា",
     grade: "ថ្នាក់ទី៩",
     chapter: "ជំពូកទី ២៖ កម្លាំង និងចលនា",
@@ -34,19 +53,53 @@ const defaultPlans: LessonPlan[] = [
 export const useLessonPlans = () => {
   const plans = ref<LessonPlan[]>([]);
   const loading = ref(false);
+  const pagination = ref<LessonPlanPagination>({
+    page: 1,
+    limit: 9,
+    total: 0,
+    totalPages: 1,
+  });
 
-  const load = async () => {
+  const load = async (filter?: LessonPlanFilterParams) => {
     loading.value = true;
     try {
-      const res = await $fetch<{ success: boolean; data: LessonPlan[] }>(
-        "/api/lesson-plans"
-      );
+      const params = new URLSearchParams();
+      if (filter?.page) params.append("page", String(filter.page));
+      if (filter?.limit) params.append("limit", String(filter.limit));
+      if (filter?.search) params.append("search", filter.search.trim());
+      if (filter?.grade && filter.grade !== "all") {
+        params.append("grade", filter.grade);
+      }
+      if (filter?.subject && filter.subject !== "all") {
+        params.append("subject", filter.subject);
+      }
+      if (filter?.academicYear && filter.academicYear !== "all") {
+        params.append("academicYear", filter.academicYear);
+      }
+      if (filter?.schoolId && filter.schoolId !== "all") {
+        params.append("schoolId", filter.schoolId);
+      }
+
+      const queryStr = params.toString() ? `?${params.toString()}` : "";
+      const res = await $fetch<{
+        success: boolean;
+        data: LessonPlan[];
+        pagination?: LessonPlanPagination;
+      }>(`/api/lesson-plans${queryStr}`);
+
       if (res && res.data) {
         plans.value = res.data;
-        if (import.meta.client) {
-          localStorage.setItem("kh_teacher_plans", JSON.stringify(res.data));
+        if (res.pagination) {
+          pagination.value = res.pagination;
+        } else {
+          pagination.value = {
+            page: filter?.page || 1,
+            limit: filter?.limit || 9,
+            total: res.data.length,
+            totalPages: 1,
+          };
         }
-        return;
+        return res;
       }
     } catch (err) {
       console.warn("API load failed, falling back to localStorage:", err);
@@ -56,7 +109,14 @@ export const useLessonPlans = () => {
 
     if (import.meta.client) {
       const stored = localStorage.getItem("kh_teacher_plans");
-      plans.value = stored ? JSON.parse(stored) : [...defaultPlans];
+      const list = stored ? JSON.parse(stored) : [...defaultPlans];
+      plans.value = list;
+      pagination.value = {
+        page: 1,
+        limit: 9,
+        total: list.length,
+        totalPages: Math.ceil(list.length / 9) || 1,
+      };
     }
   };
 
@@ -71,6 +131,7 @@ export const useLessonPlans = () => {
       );
       if (res && res.data) {
         plans.value.unshift(res.data);
+        pagination.value.total++;
         return res.data;
       }
     } catch (err) {
@@ -102,6 +163,7 @@ export const useLessonPlans = () => {
   const remove = async (id: string) => {
     try {
       await $fetch(`/api/lesson-plans/${id}`, { method: "DELETE" });
+      pagination.value.total = Math.max(0, pagination.value.total - 1);
     } catch (err) {
       console.error("API remove failed:", err);
     }
@@ -110,5 +172,5 @@ export const useLessonPlans = () => {
 
   const getById = (id: string) => plans.value.find((p) => p.id === id);
 
-  return { plans, loading, load, add, update, remove, getById };
+  return { plans, loading, pagination, load, add, update, remove, getById };
 };

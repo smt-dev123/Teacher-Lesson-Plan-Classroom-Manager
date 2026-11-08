@@ -1,5 +1,6 @@
 import { db, lessonPlans } from "../../database";
 import { desc, eq, and, ilike, or, sql } from "drizzle-orm";
+import { getAuthUser } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -8,6 +9,9 @@ export default defineEventHandler(async (event) => {
   const search = query.search ? String(query.search).trim() : null;
   const academicYear = query.academicYear ? String(query.academicYear) : null;
   const schoolId = query.schoolId ? String(query.schoolId) : null;
+  const requestedUserId = query.userId ? String(query.userId) : null;
+
+  const authUser = await getAuthUser(event);
 
   const page = Math.max(1, Number(query.page) || 1);
   const limit = Math.max(
@@ -17,6 +21,17 @@ export default defineEventHandler(async (event) => {
   const offset = (page - 1) * limit;
 
   const conditions = [];
+
+  // Scoping per user:
+  if (requestedUserId && requestedUserId !== "all") {
+    conditions.push(eq(lessonPlans.userId, requestedUserId));
+  } else if (authUser) {
+    // If logged-in user is a teacher, scope to their own plans by default
+    // unless explicitly requesting all (if admin/dept head)
+    if (authUser.role === "គ្រូបង្រៀន" || query.mine === "true") {
+      conditions.push(eq(lessonPlans.userId, authUser.id));
+    }
+  }
 
   if (academicYear && academicYear !== "all") {
     conditions.push(eq(lessonPlans.academicYear, academicYear));
@@ -68,5 +83,8 @@ export default defineEventHandler(async (event) => {
       total,
       totalPages,
     },
+    currentUser: authUser
+      ? { id: authUser.id, name: authUser.name, role: authUser.role }
+      : null,
   };
 });

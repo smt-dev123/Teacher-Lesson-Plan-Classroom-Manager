@@ -47,6 +47,7 @@ export const subjects = pgTable("subjects", {
 
 export const lessonPlans = pgTable("lesson_plans", {
   id: varchar("id", { length: 64 }).primaryKey(),
+  userId: varchar("user_id", { length: 64 }).default("user-1"),
   schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   academicYear: text("academic_year").default("2024-2025").notNull(),
   subject: text("subject").notNull(),
@@ -80,10 +81,12 @@ export const users = pgTable("users", {
   schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
+  password: text("password").default(""),
   phone: text("phone").default(""),
   role: text("role").default("គ្រូបង្រៀន"),
   subject: text("subject").default(""),
   status: text("status").default("សកម្ម"),
+  avatar: text("avatar").default(""),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

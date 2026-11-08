@@ -208,6 +208,15 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-form-item :label="isEdit ? 'ពាក្យសម្ងាត់ថ្មី (ទុកទទេបើមិនប្តូរ)' : 'ពាក្យសម្ងាត់'">
+          <el-input
+            v-model="form.password"
+            type="password"
+            show-password
+            placeholder="យ៉ាងតិច ៦ តួអក្សរ (Default: 123456)"
+          />
+        </el-form-item>
       </el-form>
 
       <template #footer>
@@ -249,63 +258,7 @@ const statusFilter = ref("");
 const modalVisible = ref(false);
 const isEdit = ref(false);
 
-const users = ref<UserItem[]>([
-  {
-    id: "u-1",
-    name: "លោកគ្រូ លុយ សុមាត្រា",
-    email: "somatra@school.edu.kh",
-    phone: "012 345 678",
-    role: "គ្រូបង្រៀន",
-    subject: "រូបវិទ្យា & គណិតវិទ្យា",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
-    active: true,
-  },
-  {
-    id: "u-2",
-    name: "អ្នកគ្រូ ចាន់ សុភា",
-    email: "sophea.chan@school.edu.kh",
-    phone: "098 765 432",
-    role: "ប្រធានដេប៉ាតឺម៉ង់",
-    subject: "គីមីវិទ្យា",
-    avatar:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces",
-    active: true,
-  },
-  {
-    id: "u-3",
-    name: "លោកគ្រូ កែវ វិបុល",
-    email: "vibol.keo@school.edu.kh",
-    phone: "077 112 233",
-    role: "គ្រូបង្រៀន",
-    subject: "ជីវវិទ្យា",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
-    active: true,
-  },
-  {
-    id: "u-4",
-    name: "អ្នកគ្រូ ម៉ៅ ចិន្តា",
-    email: "chenda.mao@school.edu.kh",
-    phone: "015 889 900",
-    role: "គ្រូបង្រៀន",
-    subject: "ភាសាខ្មែរ",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
-    active: false,
-  },
-  {
-    id: "u-5",
-    name: "លោកគ្រូ ហេង ពិសិដ្ឋ",
-    email: "piseth.heng@school.edu.kh",
-    phone: "089 554 433",
-    role: "អ្នកគ្រប់គ្រង",
-    subject: "ព័ត៌មានវិទ្យា",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
-    active: true,
-  },
-]);
+const users = ref<UserItem[]>([]);
 
 const form = reactive({
   id: "",
@@ -314,6 +267,7 @@ const form = reactive({
   phone: "",
   role: "គ្រូបង្រៀន" as UserItem["role"],
   subject: "",
+  password: "",
 });
 
 const stats = computed(() => [
@@ -370,6 +324,7 @@ const openCreateModal = () => {
     phone: "",
     role: "គ្រូបង្រៀន",
     subject: "",
+    password: "",
   });
   modalVisible.value = true;
 };
@@ -383,6 +338,7 @@ const openEditModal = (row: UserItem) => {
     phone: row.phone,
     role: row.role,
     subject: row.subject,
+    password: "",
   });
   modalVisible.value = true;
 };
@@ -390,7 +346,7 @@ const openEditModal = (row: UserItem) => {
 const loadUsers = async () => {
   try {
     const res = await $fetch<{ success: boolean; data: any[] }>("/api/users");
-    if (res?.data && res.data.length > 0) {
+    if (res?.data) {
       users.value = res.data.map((u) => ({
         id: u.id,
         name: u.name,
@@ -399,6 +355,7 @@ const loadUsers = async () => {
         role: u.role || "គ្រូបង្រៀន",
         subject: u.subject || "",
         avatar:
+          u.avatar ||
           "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
         active: u.status === "សកម្ម",
       }));
@@ -417,16 +374,20 @@ const saveUser = async () => {
   }
   try {
     if (isEdit.value) {
+      const payload: any = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        role: form.role,
+        subject: form.subject,
+        status: "សកម្ម",
+      };
+      if (form.password) {
+        payload.password = form.password;
+      }
       await $fetch(`/api/users/${form.id}`, {
         method: "PUT",
-        body: {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          role: form.role,
-          subject: form.subject,
-          status: "សកម្ម",
-        },
+        body: payload,
       });
       ElMessage.success("បានកែប្រែព័ត៌មានអ្នកប្រើប្រាស់ជោគជ័យ");
     } else {
@@ -439,6 +400,7 @@ const saveUser = async () => {
           role: form.role,
           subject: form.subject,
           status: "សកម្ម",
+          password: form.password || "123456",
         },
       });
       ElMessage.success("បានបន្ថែមអ្នកប្រើប្រាស់ថ្មីជោគជ័យ");
@@ -451,10 +413,21 @@ const saveUser = async () => {
   }
 };
 
-const toggleUserStatus = (row: UserItem) => {
-  ElMessage.info(
-    `គណនី ${row.name} ត្រូវបាន ${row.active ? "បើកដំណើរការ" : "ផ្អាកបណ្តោះអាសន្ន"}`,
-  );
+const toggleUserStatus = async (row: UserItem) => {
+  try {
+    await $fetch(`/api/users/${row.id}`, {
+      method: "PUT",
+      body: {
+        status: row.active ? "សកម្ម" : "ផ្អាក",
+      },
+    });
+    ElMessage.success(
+      `គណនី ${row.name} ត្រូវបាន ${row.active ? "បើកដំណើរការ" : "ផ្អាកបណ្តោះអាសន្ន"}`
+    );
+  } catch (err) {
+    row.active = !row.active;
+    ElMessage.error("មិនអាចផ្លាស់ប្តូរស្ថានភាពបានទេ");
+  }
 };
 
 const deleteUser = (id: string) => {

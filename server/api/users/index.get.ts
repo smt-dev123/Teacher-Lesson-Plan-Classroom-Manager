@@ -15,7 +15,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const result = await db
-    .select()
+    .select({
+      id: users.id,
+      schoolId: users.schoolId,
+      name: users.name,
+      email: users.email,
+      phone: users.phone,
+      role: users.role,
+      subject: users.subject,
+      status: users.status,
+      avatar: users.avatar,
+      createdAt: users.createdAt,
+    })
     .from(users)
     .where(conditions)
     .orderBy(desc(users.createdAt));

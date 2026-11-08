@@ -80,7 +80,10 @@
         >
           <el-avatar
             :size="36"
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
+            :src="
+              authUser?.avatar ||
+              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces'
+            "
             class="shrink-0 ring-2 ring-sky-500/30"
           />
           <div
@@ -90,10 +93,10 @@
             <h4
               class="truncate text-xs font-bold text-slate-800 dark:text-white"
             >
-              លោកគ្រូ លុយ សុមាត្រា
+              {{ authUser?.name || "លោកគ្រូ សុខ ចាន់ថន" }}
             </h4>
             <p class="truncate text-[10px] text-slate-500">
-              គ្រូបង្រៀនកម្រិតវិទ្យាល័យ
+              {{ authUser?.role || "គ្រូបង្រៀន" }} • {{ authUser?.subject || "ទូទៅ" }}
             </p>
           </div>
           <el-icon
@@ -110,9 +113,11 @@
               class="border-b border-slate-100 px-3 py-2 dark:border-slate-700"
             >
               <p class="text-xs font-bold text-slate-800 dark:text-white">
-                លោកគ្រូ លុយ សុមាត្រា
+                {{ authUser?.name || "លោកគ្រូ សុខ ចាន់ថន" }}
               </p>
-              <p class="text-sm text-slate-400">teacher@school.edu.kh</p>
+              <p class="text-xs text-slate-400">
+                {{ authUser?.email || "teacher@school.edu.kh" }}
+              </p>
             </div>
             <el-dropdown-item command="profile">
               <el-icon><User /></el-icon>
@@ -141,15 +146,18 @@
       <div class="flex flex-col items-center gap-3 text-center">
         <el-avatar
           :size="72"
-          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces"
+          :src="
+            authUser?.avatar ||
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces'
+          "
           class="ring-4 ring-sky-500/20"
         />
         <div>
           <h3 class="text-base font-bold text-slate-800 dark:text-white">
-            លោកគ្រូ លុយ សុមាត្រា
+            {{ authUser?.name || "លោកគ្រូ សុខ ចាន់ថន" }}
           </h3>
           <p class="text-[12px] text-sky-600 dark:text-sky-400">
-            គ្រូបង្រៀនកម្រិតវិទ្យាល័យ (រូបវិទ្យា & គណិតវិទ្យា)
+            {{ authUser?.role || "គ្រូបង្រៀន" }} ({{ authUser?.subject || "ទូទៅ" }})
           </p>
         </div>
       </div>
@@ -161,17 +169,17 @@
           class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700"
         >
           <span class="text-slate-500">អ៊ីមែល៖</span>
-          <span class="font-semibold text-slate-700 dark:text-slate-300"
-            >teacher@school.edu.kh</span
-          >
+          <span class="font-semibold text-slate-700 dark:text-slate-300">
+            {{ authUser?.email || "teacher@school.edu.kh" }}
+          </span>
         </div>
         <div
           class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700"
         >
           <span class="text-slate-500">លេខទូរស័ព្ទ៖</span>
-          <span class="font-semibold text-slate-700 dark:text-slate-300"
-            >+855 12 345 678</span
-          >
+          <span class="font-semibold text-slate-700 dark:text-slate-300">
+            {{ authUser?.phone || "មិនទាន់បញ្ជាក់" }}
+          </span>
         </div>
         <div
           class="flex justify-between border-b border-slate-200/60 pb-2 dark:border-slate-700"
@@ -273,8 +281,10 @@ import {
 } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { useLayoutStore } from "~/stores/layout";
+import { useAuth } from "~/composables/useAuth";
 
 const layoutStore = useLayoutStore();
+const { user: authUser, logout } = useAuth();
 const route = useRoute();
 
 const profileDialogVisible = ref(false);
@@ -299,13 +309,14 @@ const onAcademicYearChange = (v: string) => {
   ElMessage.success(`បានប្តូរទៅឆ្នាំសិក្សា ${label}`);
 };
 
-const handleUserCommand = (cmd: string) => {
+const handleUserCommand = async (cmd: string) => {
   if (cmd === "profile") {
     profileDialogVisible.value = true;
   } else if (cmd === "settings") {
     settingsDialogVisible.value = true;
   } else if (cmd === "logout") {
-    ElMessage.info("មុខងារចាកចេញពីប្រព័ន្ធ");
+    await logout();
+    ElMessage.success("បានចាកចេញពីប្រព័ន្ធដោយជោគជ័យ");
   }
 };
 </script>

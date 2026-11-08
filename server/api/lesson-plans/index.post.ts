@@ -1,4 +1,5 @@
 import { db, lessonPlans } from "../../database";
+import { getAuthUser } from "../../utils/auth";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -10,6 +11,9 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const authUser = await getAuthUser(event);
+  const userId = authUser ? authUser.id : (body.userId || "user-1");
+
   const id = body.id || `plan-${Date.now()}`;
 
   const [newPlan] = await db
@@ -17,7 +21,8 @@ export default defineEventHandler(async (event) => {
     .values({
       ...body,
       id,
-      schoolId: body.schoolId || "sch-1",
+      userId,
+      schoolId: body.schoolId || (authUser?.schoolId ?? "sch-1"),
       academicYear: body.academicYear || "2024-2025",
       updatedAt: new Date(),
     })

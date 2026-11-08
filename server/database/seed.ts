@@ -7,6 +7,7 @@ import {
   academicYears,
   subjects,
 } from "./index";
+import { hashPassword } from "../utils/auth";
 
 export async function seedDatabase() {
   console.log("Seeding database...");
@@ -219,7 +220,63 @@ export async function seedDatabase() {
     ]);
   }
 
-  // 4. Update existing lesson plans with academicYear and schoolId if not set
+  // 4. Seed Users if empty
+  const existingUsers = await db.select().from(users);
+  if (existingUsers.length === 0) {
+    const defaultPassword = hashPassword("123456");
+    await db.insert(users).values([
+      {
+        id: "user-1",
+        schoolId: "sch-1",
+        name: "លោកគ្រូ សុខ ចាន់ថន",
+        email: "chanthorn.sok@school.edu.kh",
+        password: defaultPassword,
+        phone: "012 345 678",
+        role: "គ្រូបង្រៀន",
+        subject: "រូបវិទ្យា",
+        status: "សកម្ម",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+      },
+      {
+        id: "user-2",
+        schoolId: "sch-1",
+        name: "អ្នកគ្រូ កែវ មុនីរ័ត្ន",
+        email: "moniroth.keo@school.edu.kh",
+        password: defaultPassword,
+        phone: "098 765 432",
+        role: "គ្រូបង្រៀន",
+        subject: "គណិតវិទ្យា",
+        status: "សកម្ម",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=faces",
+      },
+      {
+        id: "user-3",
+        schoolId: "sch-1",
+        name: "លោកគ្រូ ហេង វិបុល",
+        email: "vibol.heng@school.edu.kh",
+        password: defaultPassword,
+        phone: "077 112 233",
+        role: "ប្រធានដេប៉ាតឺម៉ង់",
+        subject: "គីមីវិទ្យា",
+        status: "សកម្ម",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
+      },
+      {
+        id: "user-4",
+        schoolId: "sch-1",
+        name: "អ្នកគ្រូ ឈិន ស្រីលក្ខណ៍",
+        email: "sreyleak.chhin@school.edu.kh",
+        password: defaultPassword,
+        phone: "015 889 900",
+        role: "អ្នកគ្រប់គ្រង",
+        subject: "ទូទៅ",
+        status: "សកម្ម",
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+      },
+    ]);
+  }
+
+  // 5. Update existing lesson plans with academicYear and schoolId if not set
   await db
     .update(lessonPlans)
     .set({

@@ -51,6 +51,23 @@
             :value="s.name"
           />
         </el-select>
+
+        <!-- Admin: Filter by Teacher -->
+        <el-select
+          v-if="authUser && authUser.role === 'អ្នកគ្រប់គ្រង'"
+          v-model="userFilter"
+          placeholder="ជ្រើសរើសគ្រូ"
+          class="!w-48"
+          @change="onFilterChange"
+        >
+          <el-option label="កិច្ចតែងការទាំងអស់" value="all" />
+          <el-option
+            v-for="t in teacherUsers"
+            :key="t.id"
+            :label="t.name"
+            :value="t.id"
+          />
+        </el-select>
       </div>
 
       <div class="flex items-center gap-2">
@@ -131,6 +148,7 @@ import type { LessonPlan } from "~/types";
 import { useLessonPlans } from "~/composables/useLessonPlans";
 import { useSubjects } from "~/composables/useSubjects";
 import { useLayoutStore } from "~/stores/layout";
+import { useAuth } from "~/composables/useAuth";
 import { ElMessage, ElMessageBox } from "element-plus";
 import PlanCard from "~/components/plans/PlanCard.vue";
 import PlanFormModal from "~/components/plans/PlanFormModal.vue";
@@ -138,6 +156,7 @@ import PlanPrintModal from "~/components/plans/PlanPrintModal.vue";
 import { exportLessonPlanToDocx } from "~/utils/exportLessonPlanDocx";
 
 const layoutStore = useLayoutStore();
+const { user: authUser } = useAuth();
 const { plans, loading, pagination, load, add, update, remove, getById } =
   useLessonPlans();
 const { subjects, load: loadSubjects } = useSubjects();
@@ -145,8 +164,10 @@ const { subjects, load: loadSubjects } = useSubjects();
 const searchQuery = ref("");
 const gradeFilter = ref("all");
 const subjectFilter = ref("all");
+const userFilter = ref("all");
 const page = ref(1);
 const limit = ref(9);
+const teacherUsers = ref<any[]>([]);
 
 const fetchPlans = () => {
   load({
@@ -155,8 +176,20 @@ const fetchPlans = () => {
     search: searchQuery.value,
     grade: gradeFilter.value,
     subject: subjectFilter.value,
+    userId: userFilter.value !== "all" ? userFilter.value : undefined,
     academicYear: layoutStore.academicYear,
   });
+};
+
+const loadTeacherList = async () => {
+  if (authUser.value?.role === "អ្នកគ្រប់គ្រង") {
+    try {
+      const res = await $fetch<{ success: boolean; data: any[] }>("/api/users");
+      if (res?.data) {
+        teacherUsers.value = res.data;
+      }
+    } catch {}
+  }
 };
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -187,12 +220,21 @@ const onSizeChange = (newSize: number) => {
 onMounted(() => {
   fetchPlans();
   loadSubjects();
+  loadTeacherList();
 });
 
 watch(
   () => layoutStore.academicYear,
   () => {
     page.value = 1;
+    fetchPlans();
+  }
+);
+
+watch(
+  () => authUser.value,
+  () => {
+    loadTeacherList();
     fetchPlans();
   }
 );
@@ -215,8 +257,9 @@ const openEdit = (id: string) => {
 const onSave = async (plan: LessonPlan) => {
   const planData = {
     ...plan,
+    userId: authUser.value?.id || "user-1",
     academicYear: layoutStore.academicYear,
-    schoolId: "sch-1",
+    schoolId: authUser.value?.schoolId || "sch-1",
   };
   if (editingPlan.value) {
     await update(planData);

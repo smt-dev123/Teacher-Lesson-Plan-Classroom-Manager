@@ -219,7 +219,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, onMounted } from "vue";
 import {
   Plus,
   Search,
@@ -387,28 +387,68 @@ const openEditModal = (row: UserItem) => {
   modalVisible.value = true;
 };
 
-const saveUser = () => {
+const loadUsers = async () => {
+  try {
+    const res = await $fetch<{ success: boolean; data: any[] }>("/api/users");
+    if (res?.data && res.data.length > 0) {
+      users.value = res.data.map((u) => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone || "",
+        role: u.role || "គ្រូបង្រៀន",
+        subject: u.subject || "",
+        avatar:
+          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+        active: u.status === "សកម្ម",
+      }));
+    }
+  } catch (err) {
+    console.error("Failed to load users from API:", err);
+  }
+};
+
+onMounted(loadUsers);
+
+const saveUser = async () => {
   if (!form.name || !form.email) {
     ElMessage.warning("សូមបំពេញឈ្មោះ និងអ៊ីមែល");
     return;
   }
-  if (isEdit.value) {
-    const item = users.value.find((u) => u.id === form.id);
-    if (item) {
-      Object.assign(item, form);
+  try {
+    if (isEdit.value) {
+      await $fetch(`/api/users/${form.id}`, {
+        method: "PUT",
+        body: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          role: form.role,
+          subject: form.subject,
+          status: "សកម្ម",
+        },
+      });
       ElMessage.success("បានកែប្រែព័ត៌មានអ្នកប្រើប្រាស់ជោគជ័យ");
+    } else {
+      await $fetch("/api/users", {
+        method: "POST",
+        body: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          role: form.role,
+          subject: form.subject,
+          status: "សកម្ម",
+        },
+      });
+      ElMessage.success("បានបន្ថែមអ្នកប្រើប្រាស់ថ្មីជោគជ័យ");
     }
-  } else {
-    users.value.unshift({
-      ...form,
-      id: "u-" + Date.now(),
-      avatar:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces",
-      active: true,
-    });
-    ElMessage.success("បានបន្ថែមអ្នកប្រើប្រាស់ថ្មីជោគជ័យ");
+    await loadUsers();
+    modalVisible.value = false;
+  } catch (err) {
+    console.error("Save user error:", err);
+    ElMessage.error("មានបញ្ហាក្នុងការរក្សាទុកអ្នកប្រើប្រាស់");
   }
-  modalVisible.value = false;
 };
 
 const toggleUserStatus = (row: UserItem) => {
@@ -427,9 +467,14 @@ const deleteUser = (id: string) => {
       type: "warning",
     },
   )
-    .then(() => {
-      users.value = users.value.filter((u) => u.id !== id);
-      ElMessage.success("បានលុបអ្នកប្រើប្រាស់ជោគជ័យ");
+    .then(async () => {
+      try {
+        await $fetch(`/api/users/${id}`, { method: "DELETE" });
+        await loadUsers();
+        ElMessage.success("បានលុបអ្នកប្រើប្រាស់ជោគជ័យ");
+      } catch (err) {
+        ElMessage.error("មានបញ្ហាក្នុងការលុប");
+      }
     })
     .catch(() => {});
 };

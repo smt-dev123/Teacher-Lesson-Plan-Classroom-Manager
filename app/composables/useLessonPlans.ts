@@ -33,37 +33,82 @@ const defaultPlans: LessonPlan[] = [
 
 export const useLessonPlans = () => {
   const plans = ref<LessonPlan[]>([]);
+  const loading = ref(false);
 
-  const load = () => {
+  const load = async () => {
+    loading.value = true;
+    try {
+      const res = await $fetch<{ success: boolean; data: LessonPlan[] }>(
+        "/api/lesson-plans"
+      );
+      if (res && res.data) {
+        plans.value = res.data;
+        if (import.meta.client) {
+          localStorage.setItem("kh_teacher_plans", JSON.stringify(res.data));
+        }
+        return;
+      }
+    } catch (err) {
+      console.warn("API load failed, falling back to localStorage:", err);
+    } finally {
+      loading.value = false;
+    }
+
     if (import.meta.client) {
       const stored = localStorage.getItem("kh_teacher_plans");
       plans.value = stored ? JSON.parse(stored) : [...defaultPlans];
     }
   };
 
-  const save = () => {
-    if (import.meta.client) {
-      localStorage.setItem("kh_teacher_plans", JSON.stringify(plans.value));
+  const add = async (plan: LessonPlan) => {
+    try {
+      const res = await $fetch<{ success: boolean; data: LessonPlan }>(
+        "/api/lesson-plans",
+        {
+          method: "POST",
+          body: plan,
+        }
+      );
+      if (res && res.data) {
+        plans.value.unshift(res.data);
+        return res.data;
+      }
+    } catch (err) {
+      console.error("API add failed:", err);
+      plans.value.unshift(plan);
     }
   };
 
-  const add = (plan: LessonPlan) => {
-    plans.value.unshift(plan);
-    save();
+  const update = async (plan: LessonPlan) => {
+    try {
+      const res = await $fetch<{ success: boolean; data: LessonPlan }>(
+        `/api/lesson-plans/${plan.id}`,
+        {
+          method: "PUT",
+          body: plan,
+        }
+      );
+      const updatedPlan = res?.data || plan;
+      const i = plans.value.findIndex((p) => p.id === plan.id);
+      if (i > -1) plans.value[i] = updatedPlan;
+      return updatedPlan;
+    } catch (err) {
+      console.error("API update failed:", err);
+      const i = plans.value.findIndex((p) => p.id === plan.id);
+      if (i > -1) plans.value[i] = plan;
+    }
   };
 
-  const update = (plan: LessonPlan) => {
-    const i = plans.value.findIndex((p) => p.id === plan.id);
-    if (i > -1) plans.value[i] = plan;
-    save();
-  };
-
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
+    try {
+      await $fetch(`/api/lesson-plans/${id}`, { method: "DELETE" });
+    } catch (err) {
+      console.error("API remove failed:", err);
+    }
     plans.value = plans.value.filter((p) => p.id !== id);
-    save();
   };
 
   const getById = (id: string) => plans.value.find((p) => p.id === id);
 
-  return { plans, load, save, add, update, remove, getById };
+  return { plans, loading, load, add, update, remove, getById };
 };

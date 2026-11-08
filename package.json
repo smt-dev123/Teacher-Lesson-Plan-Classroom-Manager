@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:push": "drizzle-kit push",
+    "db:seed": "bun run server/database/seed.ts"
   },
   "dependencies": {
     "@element-plus/icons-vue": ">=0.2.6",
@@ -18,10 +20,15 @@
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "docx": "^9.15.3",
+    "drizzle-orm": "^0.45.4",
     "element-plus": ">=2",
     "nuxt": "^4.6.4",
     "pinia": "^4.1.0",
+    "postgres": "^4.1.0",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.11"
   }
 }

@@ -17,6 +17,7 @@
     "@pinia/nuxt": "1.0.3",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
+    "docx": "^9.15.3",
     "element-plus": ">=2",
     "nuxt": "^4.6.4",
     "pinia": "^4.1.0",

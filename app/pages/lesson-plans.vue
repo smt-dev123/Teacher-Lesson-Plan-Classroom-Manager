@@ -51,6 +51,7 @@
         @edit="openEdit"
         @delete="onDelete"
         @view="openPrint"
+        @download-docx="handleDownloadDocx"
       />
     </div>
     <el-empty v-else description="មិនមានកិច្ចតែងការតាមការស្វែងរក" />
@@ -70,6 +71,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import PlanCard from "~/components/plans/PlanCard.vue";
 import PlanFormModal from "~/components/plans/PlanFormModal.vue";
 import PlanPrintModal from "~/components/plans/PlanPrintModal.vue";
+import { exportLessonPlanToDocx } from "~/utils/exportLessonPlanDocx";
 
 const { plans, load, add, update, remove, getById } = useLessonPlans();
 
@@ -128,5 +130,15 @@ const onDelete = async (id: string) => {
 const openPrint = (id: string) => {
   printingPlan.value = getById(id) || null;
   printVisible.value = true;
+};
+
+const handleDownloadDocx = async (plan: LessonPlan) => {
+  try {
+    await exportLessonPlanToDocx(plan);
+    ElMessage.success("ទាញយកកិច្ចតែងការ (.docx) បានជោគជ័យ!");
+  } catch (err) {
+    console.error("Download docx error:", err);
+    ElMessage.error("មានបញ្ហាក្នុងការបង្កើតឯកសារ .docx");
+  }
 };
 </script>

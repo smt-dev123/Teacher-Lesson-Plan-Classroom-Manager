@@ -1,92 +1,188 @@
 <template>
   <el-dialog
     v-model="visible"
-    width="min(900px, 95vw)"
+    width="min(980px, 96vw)"
     top="2vh"
     class="print-modal"
+    modal-class="print-overlay"
   >
     <template #header>
-      <div class="flex items-center justify-between">
-        <span class="text-sm font-semibold">ទិដ្ឋភាពបោះពុម្ព</span>
-        <el-button type="primary" size="small" @click="doPrint">
-          <el-icon><Printer /></el-icon> បោះពុម្ព
-        </el-button>
+      <div class="flex items-center justify-between pr-6">
+        <span class="text-sm font-semibold">ទិដ្ឋភាពបោះពុម្ពកិច្ចតែងការ</span>
+        <div class="flex items-center gap-2">
+          <el-button
+            type="success"
+            size="small"
+            :loading="isExporting"
+            @click="onDownloadDocx"
+          >
+            <el-icon><Download /></el-icon> ទាញយក .docx
+          </el-button>
+          <el-button type="primary" size="small" @click="doPrint">
+            <el-icon><Printer /></el-icon> បោះពុម្ព
+          </el-button>
+        </div>
       </div>
     </template>
 
-    <div v-if="plan" id="print-area" class="p-4 font-khmer leading-relaxed">
-      <div class="mb-4 border-b pb-3 text-center">
-        <p class="font-moul text-sm">ព្រះរាជាណាចក្រកម្ពុជា</p>
+    <div
+      v-if="plan"
+      id="print-area"
+      class="p-6 font-khmer leading-relaxed text-slate-900 bg-white"
+    >
+      <!-- Header -->
+      <div class="mb-5 border-b border-slate-300 pb-3 text-center">
+        <p class="font-moul text-sm tracking-wide">ព្រះរាជាណាចក្រកម្ពុជា</p>
         <p class="font-moul text-xs">ជាតិ សាសនា ព្រះមហាក្សត្រ</p>
-        <div class="mx-auto my-2 h-0.5 w-24 bg-slate-800"></div>
-        <h2 class="font-moul text-base text-sky-800">កិច្ចតែងការបង្រៀន</h2>
+        <div class="my-1 text-center font-tacteing text-2xl text-slate-500">
+          7
+        </div>
+        <h2 class="font-moul text-base text-sky-900 mt-2">កិច្ចតែងការបង្រៀន</h2>
       </div>
 
-      <div class="mb-4 grid grid-cols-2 gap-y-1 text-xs">
+      <!-- Basic Info -->
+      <div class="mb-4 grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
         <div><strong>មុខវិជ្ជា៖</strong> {{ plan.subject }}</div>
         <div><strong>ថ្នាក់ទី៖</strong> {{ plan.grade }}</div>
         <div><strong>កាលបរិច្ឆេទ៖</strong> {{ plan.date }}</div>
         <div><strong>រយៈពេល៖</strong> {{ plan.duration }}</div>
         <div class="col-span-2"><strong>ជំពូក៖</strong> {{ plan.chapter }}</div>
-        <div class="col-span-2"><strong>ចំណងជើង៖</strong> {{ plan.topic }}</div>
+        <div class="col-span-2">
+          <strong>ចំណងជើងមេរៀន៖</strong>
+          <span class="font-bold text-sky-900">{{ plan.topic }}</span>
+        </div>
       </div>
 
-      <div class="mb-3 rounded-lg border bg-slate-50 p-3">
-        <h4 class="mb-1 text-xs font-bold underline">I. វត្ថុបំណង</h4>
-        <p class="text-xs">
-          <strong>១. ចំណេះដឹង៖</strong> {{ plan.objKnowledge }}
-        </p>
-        <p class="text-xs"><strong>២. បំណិន៖</strong> {{ plan.objSkills }}</p>
-        <p class="text-xs">
-          <strong>៣. ឥរិយាបថ៖</strong> {{ plan.objAttitude }}
-        </p>
+      <!-- Objectives -->
+      <div class="mb-3 rounded-lg border border-slate-300 bg-slate-50/70 p-3">
+        <h4 class="mb-2 text-xs font-bold underline text-slate-800">
+          I. វត្ថុបំណង
+        </h4>
+        <div class="space-y-1 text-xs">
+          <div class="flex items-start gap-1">
+            <strong class="shrink-0">១. ចំណេះដឹង៖</strong>
+            <div class="rich-content flex-1" v-html="plan.objKnowledge" />
+          </div>
+          <div class="flex items-start gap-1">
+            <strong class="shrink-0">២. បំណិន៖</strong>
+            <div class="rich-content flex-1" v-html="plan.objSkills" />
+          </div>
+          <div class="flex items-start gap-1">
+            <strong class="shrink-0">៣. ឥរិយាបថ៖</strong>
+            <div class="rich-content flex-1" v-html="plan.objAttitude" />
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3 grid grid-cols-2 gap-3 text-xs">
-        <div class="rounded-lg border p-2">
+      <!-- Materials & References -->
+      <div class="mb-4 grid grid-cols-2 gap-3 text-xs">
+        <div class="rounded-lg border border-slate-300 p-2.5 bg-slate-50/50">
           <strong>II. សម្ភារឧបទេស៖</strong>
-          <p>{{ plan.materials }}</p>
+          <p class="mt-1 text-slate-700">
+            {{ plan.materials || "សៀវភៅពុម្ព, ក្តារខៀន, ឧបករណ៍ពិសោធន៍" }}
+          </p>
         </div>
-        <div class="rounded-lg border p-2">
+        <div class="rounded-lg border border-slate-300 p-2.5 bg-slate-50/50">
           <strong>III. ឯកសារយោង៖</strong>
-          <p>{{ plan.references }}</p>
+          <p class="mt-1 text-slate-700">
+            {{ plan.references || "សៀវភៅគ្រូ និងសៀវភៅសិក្សាគោលក្រសួងអប់រំ" }}
+          </p>
         </div>
       </div>
 
-      <h4 class="mb-2 text-xs font-bold underline">
-        IV. ដំណើរបង្រៀន (៥ ជំហាន)
+      <!-- Teaching Process Table (IV. ដំណើរបង្រៀន) -->
+      <h4 class="mb-2 text-xs font-bold underline text-slate-800">
+        IV. ដំណើរបង្រៀន (៥ ជំហានគរុកោសល្យ)
       </h4>
-      <table class="w-full border-collapse border text-xs">
-        <thead>
-          <tr class="bg-slate-200">
-            <th class="w-32 border p-2">ជំហាន</th>
-            <th class="border p-2">សកម្មភាពគ្រូ</th>
-            <th class="border p-2">សកម្មភាពសិស្ស</th>
+      <table class="w-full border-collapse border border-slate-400 text-xs">
+        <thead class="bg-slate-200/90 font-bold text-slate-800">
+          <tr>
+            <th
+              class="border border-slate-400 p-2 text-center"
+              style="width: 30%"
+            >
+              សកម្មភាពគ្រូ
+            </th>
+            <th
+              class="border border-slate-400 p-2 text-center"
+              style="width: 40%"
+            >
+              ខ្លឹមសារមេរៀន
+            </th>
+            <th
+              class="border border-slate-400 p-2 text-center"
+              style="width: 30%"
+            >
+              សកម្មភាពសិស្ស
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(step, i) in steps" :key="i">
-            <td class="border bg-slate-50 p-2 font-bold">
-              {{ khNum[i] }}. {{ step.title }}
+            <!-- ១. សកម្មភាពគ្រូ -->
+            <td class="border border-slate-400 p-2.5 align-top">
+              <div
+                v-if="(plan as any)[step.teacher]"
+                class="rich-content space-y-1"
+                v-html="(plan as any)[step.teacher]"
+              />
+              <p v-else class="text-slate-400 italic text-[11px]">
+                - គ្មានសកម្មភាព
+              </p>
             </td>
-            <td class="border p-2">{{ (plan as any)[step.teacher] }}</td>
-            <td class="border p-2">{{ (plan as any)[step.student] }}</td>
+
+            <!-- ២. ខ្លឹមសារមេរៀន (ជំហាននីមួយៗនៅក្នុងខ្លឹមសារមេរៀន) -->
+            <td class="border border-slate-400 p-2.5 align-top bg-slate-50/40">
+              <div
+                class="font-bold text-sky-900 border-b border-slate-300 pb-1 mb-1.5"
+              >
+                {{ step.stepName }}៖ {{ step.title }}
+              </div>
+
+              <!-- ករណីជំហានទី៣ (មេរៀនថ្មី) បង្ហាញខ្លឹមសារមេរៀន step3Content -->
+              <div v-if="i === 2 && plan.step3Content" class="mt-1">
+                <div
+                  class="rich-content font-normal text-slate-800"
+                  v-html="plan.step3Content"
+                />
+              </div>
+              <div v-else class="text-[11px] text-slate-600 leading-normal">
+                {{ step.description }}
+              </div>
+            </td>
+
+            <!-- ៣. សកម្មភាពសិស្ស -->
+            <td class="border border-slate-400 p-2.5 align-top">
+              <div
+                v-if="(plan as any)[step.student]"
+                class="rich-content space-y-1"
+                v-html="(plan as any)[step.student]"
+              />
+              <p v-else class="text-slate-400 italic text-[11px]">
+                - គ្មានសកម្មភាព
+              </p>
+            </td>
           </tr>
         </tbody>
       </table>
 
-      <div class="mt-8 flex justify-between text-xs">
-        <div class="text-center">
+      <!-- Footer Signatures -->
+      <div class="mt-8 flex justify-between text-xs pt-4">
+        <div class="text-center space-y-1">
           <p>បានឃើញ និងឯកភាព</p>
-          <p class="font-bold">នាយកសាលា</p>
+          <p class="font-bold">នាយកសាលា / គណៈគ្រប់គ្រង</p>
           <div class="h-16"></div>
-          <p class="text-slate-400">.................</p>
+          <p class="text-slate-400">
+            ....................................................
+          </p>
         </div>
-        <div class="text-center">
-          <p>ថ្ងៃទី...... ខែ...... ឆ្នាំ ២០២...</p>
+        <div class="text-center space-y-1">
+          <p>........ថ្ងៃទី...... ខែ...... ឆ្នាំ ២០.....</p>
           <p class="font-bold">ហត្ថលេខាគ្រូបង្រៀន</p>
           <div class="h-16"></div>
-          <p class="font-semibold">លោកគ្រូ សុខ ចាន់ថន</p>
+          <p class="text-slate-400">
+            ....................................................
+          </p>
         </div>
       </div>
     </div>
@@ -94,26 +190,137 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import { Printer } from "@element-plus/icons-vue";
+import { computed, ref } from "vue";
+import { Printer, Download } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
 import type { LessonPlan } from "~/types";
+import { exportLessonPlanToDocx } from "~/utils/exportLessonPlanDocx";
 
 const props = defineProps<{ modelValue: boolean; plan: LessonPlan | null }>();
 const emit = defineEmits<{ "update:modelValue": [boolean] }>();
+
+const isExporting = ref(false);
 
 const visible = computed({
   get: () => props.modelValue,
   set: (v) => emit("update:modelValue", v),
 });
 
-const khNum = ["១", "២", "៣", "៤", "៥"];
+const onDownloadDocx = async () => {
+  if (!props.plan) return;
+  try {
+    isExporting.value = true;
+    await exportLessonPlanToDocx(props.plan);
+    ElMessage.success("ទាញយកកិច្ចតែងការ (.docx) បានជោគជ័យ!");
+  } catch (error) {
+    console.error("Export docx error:", error);
+    ElMessage.error("មានបញ្ហាក្នុងការបង្កើតឯកសារ .docx");
+  } finally {
+    isExporting.value = false;
+  }
+};
+
 const steps = [
-  { title: "ពិនិត្យវត្តមាន", teacher: "step1Teacher", student: "step1Student" },
-  { title: "រំលឹកមេរៀនចាស់", teacher: "step2Teacher", student: "step2Student" },
-  { title: "មេរៀនថ្មី", teacher: "step3Teacher", student: "step3Student" },
-  { title: "ពង្រឹងចំណេះដឹង", teacher: "step4Teacher", student: "step4Student" },
-  { title: "បណ្តាំផ្ញើ", teacher: "step5Teacher", student: "step5Student" },
+  {
+    stepName: "ជំហានទី១",
+    title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់",
+    teacher: "step1Teacher",
+    student: "step1Student",
+    description: "ពិនិត្យអនាម័យ សណ្តាប់ធ្នាប់ និងវត្តមានសិស្សក្នុងថ្នាក់",
+  },
+  {
+    stepName: "ជំហានទី២",
+    title: "រំលឹកមេរៀនចាស់",
+    teacher: "step2Teacher",
+    student: "step2Student",
+    description: "សួរសំណួររំលឹកចំណុចសំខាន់ៗនៃមេរៀនមុន",
+  },
+  {
+    stepName: "ជំហានទី៣",
+    title: "មេរៀនថ្មី & ខ្លឹមសារ",
+    teacher: "step3Teacher",
+    student: "step3Student",
+    description: "ខ្លឹមសារ និងទ្រឹស្តីគន្លឹះនៃមេរៀនថ្មី",
+  },
+  {
+    stepName: "ជំហានទី៤",
+    title: "ពង្រឹងចំណេះដឹង (ពង្រឹងពុទ្ធិ)",
+    teacher: "step4Teacher",
+    student: "step4Student",
+    description: "សំណួរ និងលំហាត់អនុវត្តពង្រឹងការយល់ដឹង",
+  },
+  {
+    stepName: "ជំហានទី៥",
+    title: "បណ្តាំផ្ញើ & កិច្ចការផ្ទះ",
+    teacher: "step5Teacher",
+    student: "step5Student",
+    description: "ដាក់កិច្ចការស្រាវជ្រាវ និងការរំលឹកឱ្យសិស្សមើលមេរៀនបន្ត",
+  },
 ];
 
-const doPrint = () => window.print();
+const doPrint = () => {
+  if (import.meta.client) {
+    window.print();
+  }
+};
 </script>
+
+<style scoped>
+.rich-content :deep(p) {
+  margin: 0 0 4px 0;
+}
+.rich-content :deep(ul) {
+  list-style-type: disc;
+  padding-left: 1.2rem;
+  margin: 4px 0;
+}
+.rich-content :deep(ol) {
+  list-style-type: decimal;
+  padding-left: 1.2rem;
+  margin: 4px 0;
+}
+.rich-content :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 4px 0;
+}
+
+/* Print CSS */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  /* លាក់ body ទាំងអស់ */
+  :global(body.printing > *) {
+    display: none !important;
+  }
+
+  /* បង្ហាញតែ print-root */
+  #print-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  #print-root * {
+    visibility: visible !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+}
+</style>

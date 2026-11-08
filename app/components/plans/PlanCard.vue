@@ -39,6 +39,15 @@
         <el-button text circle size="small" @click="$emit('delete', plan.id)">
           <el-icon><Delete /></el-icon>
         </el-button>
+        <el-button
+          text
+          circle
+          size="small"
+          title="ទាញយកជា Word (.docx)"
+          @click="$emit('download-docx', plan)"
+        >
+          <el-icon><Download /></el-icon>
+        </el-button>
         <el-button type="primary" size="small" @click="$emit('view', plan.id)">
           <el-icon class="mr-1"><View /></el-icon> មើល
         </el-button>
@@ -48,9 +57,14 @@
 </template>
 
 <script lang="ts" setup>
-import { EditPen, Delete, View } from "@element-plus/icons-vue";
+import { EditPen, Delete, View, Download } from "@element-plus/icons-vue";
 import type { LessonPlan } from "~/types";
 
 defineProps<{ plan: LessonPlan }>();
-defineEmits<{ edit: [string]; delete: [string]; view: [string] }>();
+defineEmits<{
+  edit: [string];
+  delete: [string];
+  view: [string];
+  "download-docx": [LessonPlan];
+}>();
 </script>

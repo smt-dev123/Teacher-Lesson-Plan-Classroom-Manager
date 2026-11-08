@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Tacteing";
+  src: url("../fonts/Tacteing.TTF") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  font-size: large;
+}
+
 html,
 body,
 #__nuxt {
@@ -14,6 +23,9 @@ body,
 
 .font-moul {
   font-family: "Moul", serif;
+}
+.font-tacteing {
+  font-family: "Tacteing", sans-serif;
 }
 
 /* Scrollbar */

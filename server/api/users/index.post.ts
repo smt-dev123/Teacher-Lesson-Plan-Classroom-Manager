@@ -15,10 +15,12 @@ export default defineEventHandler(async (event) => {
     ? await hashPassword(body.password)
     : await hashPassword("123456");
 
+  const { createdAt: _createdAt, ...userData } = body;
+
   const [newUser] = await db
     .insert(users)
     .values({
-      ...body,
+      ...userData,
       ...(body.id ? { id: body.id } : {}),
       email: body.email.trim().toLowerCase(),
       password,

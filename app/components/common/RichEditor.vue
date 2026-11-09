@@ -25,6 +25,7 @@
 <script lang="ts" setup>
 import "@wangeditor/editor/dist/css/style.css";
 import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
+import { ElMessage } from "element-plus";
 import type {
   IDomEditor,
   IEditorConfig,
@@ -109,8 +110,40 @@ const editorConfig: Partial<IEditorConfig> = {
       ],
     },
     uploadImage: {
-      // ប្រើ base64 សម្រាប់ demo — ក្នុង production គួរ upload ទៅ server
-      base64LimitSize: 5 * 1024 * 1024, // 5MB
+      fieldName: "file",
+      maxFileSize: 10 * 1024 * 1024, // 10MB
+      allowedFileTypes: ["image/*"],
+      async customUpload(
+        file: File,
+        insertFn: (url: string, alt: string, href: string) => void
+      ) {
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const res = await $fetch<{
+            errno?: number;
+            data?: { url: string; alt?: string; href?: string };
+            url?: string;
+          }>("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          const imgUrl = res?.data?.url || res?.url;
+          if (imgUrl) {
+            insertFn(imgUrl, file.name, imgUrl);
+            ElMessage.success("បានបញ្ចូលរូបភាពដោយជោគជ័យ");
+          } else {
+            ElMessage.error("ការ Upload រូបភាពបរាជ័យ");
+          }
+        } catch (error: any) {
+          console.error("Image upload error:", error);
+          ElMessage.error(
+            error?.data?.statusMessage || "មានបញ្ហាក្នុងការ Upload រូបភាព"
+          );
+        }
+      },
     },
   },
 };

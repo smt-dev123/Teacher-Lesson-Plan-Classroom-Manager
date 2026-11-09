@@ -144,14 +144,14 @@
                 {{ step.stepName }}៖ {{ step.title }}
               </div>
 
-              <!-- ករណីជំហានទី៣ (មេរៀនថ្មី) បង្ហាញខ្លឹមសារមេរៀន step3Content -->
-              <div v-if="i === 2 && plan.step3Content" class="mt-1">
+              <!-- បង្ហាញខ្លឹមសារមេរៀនគ្រប់ជំហាន (ប្រសិនបើមានសរសេរ) -->
+              <div v-if="hasContent((plan as any)[step.content])" class="mt-1">
                 <div
                   class="rich-content font-normal text-slate-800"
-                  v-html="plan.step3Content"
+                  v-html="(plan as any)[step.content]"
                 />
               </div>
-              <div v-else class="text-[11px] text-slate-600 leading-normal">
+              <div v-else class="text-[11px] text-slate-500 italic leading-normal">
                 {{ step.description }}
               </div>
             </td>
@@ -228,7 +228,8 @@ const onDownloadDocx = async () => {
 const steps = [
   {
     stepName: "ជំហានទី១",
-    title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់",
+    title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់ (រដ្ឋបាលថ្នាក់)",
+    content: "step1Content",
     teacher: "step1Teacher",
     student: "step1Student",
     description: "ពិនិត្យអនាម័យ សណ្តាប់ធ្នាប់ និងវត្តមានសិស្សក្នុងថ្នាក់",
@@ -236,6 +237,7 @@ const steps = [
   {
     stepName: "ជំហានទី២",
     title: "រំលឹកមេរៀនចាស់",
+    content: "step2Content",
     teacher: "step2Teacher",
     student: "step2Student",
     description: "សួរសំណួររំលឹកចំណុចសំខាន់ៗនៃមេរៀនមុន",
@@ -243,6 +245,7 @@ const steps = [
   {
     stepName: "ជំហានទី៣",
     title: "មេរៀនថ្មី & ខ្លឹមសារ",
+    content: "step3Content",
     teacher: "step3Teacher",
     student: "step3Student",
     description: "ខ្លឹមសារ និងទ្រឹស្តីគន្លឹះនៃមេរៀនថ្មី",
@@ -250,6 +253,7 @@ const steps = [
   {
     stepName: "ជំហានទី៤",
     title: "ពង្រឹងចំណេះដឹង (ពង្រឹងពុទ្ធិ)",
+    content: "step4Content",
     teacher: "step4Teacher",
     student: "step4Student",
     description: "សំណួរ និងលំហាត់អនុវត្តពង្រឹងការយល់ដឹង",
@@ -257,11 +261,17 @@ const steps = [
   {
     stepName: "ជំហានទី៥",
     title: "បណ្តាំផ្ញើ & កិច្ចការផ្ទះ",
+    content: "step5Content",
     teacher: "step5Teacher",
     student: "step5Student",
     description: "ដាក់កិច្ចការស្រាវជ្រាវ និងការរំលឹកឱ្យសិស្សមើលមេរៀនបន្ត",
   },
 ];
+
+const hasContent = (val?: string | null) => {
+  if (!val) return false;
+  return val.replace(/<[^>]*>/g, "").trim().length > 0;
+};
 
 const doPrint = () => {
   if (import.meta.client) {
@@ -294,19 +304,23 @@ const doPrint = () => {
 /* Print CSS */
 @media print {
   @page {
-    size: A4;
+    size: A4 portrait;
     margin: 10mm;
   }
 
-  /* លាក់ body ទាំងអស់ */
-  :global(body.printing > *) {
-    display: none !important;
+  body * {
+    visibility: hidden;
   }
 
-  /* បង្ហាញតែ print-root */
-  #print-root {
-    display: block !important;
-    position: static !important;
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -314,12 +328,9 @@ const doPrint = () => {
     color: #000 !important;
   }
 
-  #print-root * {
-    visibility: visible !important;
-  }
-
   table {
     page-break-inside: auto;
+    width: 100% !important;
   }
   tr {
     page-break-inside: avoid;

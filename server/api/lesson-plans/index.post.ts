@@ -13,11 +13,12 @@ export default defineEventHandler(async (event) => {
 
   const authUser = await getAuthUser(event);
   const userId = authUser ? authUser.id : (body.userId || "user-1");
+  const { createdAt: _createdAt, updatedAt: _updatedAt, ...data } = body;
 
   const [newPlan] = await db
     .insert(lessonPlans)
     .values({
-      ...body,
+      ...data,
       ...(body.id ? { id: body.id } : {}),
       userId,
       schoolId: body.schoolId || (authUser?.schoolId ?? "sch-1"),

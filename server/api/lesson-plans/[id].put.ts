@@ -35,11 +35,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
+  const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...updateData } = body;
 
   const [updated] = await db
     .update(lessonPlans)
     .set({
-      ...body,
+      ...updateData,
       updatedAt: new Date(),
     })
     .where(eq(lessonPlans.id, id))

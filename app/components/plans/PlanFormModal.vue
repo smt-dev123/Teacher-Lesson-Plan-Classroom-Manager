@@ -213,17 +213,27 @@
             ជំហានទី{{ khNum[currentStep] }}៖ {{ steps[currentStep]?.title }}
           </p>
 
-          <!-- Content -->
-          <div v-show="currentStep === 2" class="mb-3">
-            <label
-              class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
-            >
-              ខ្លឹមសារមេរៀន
-            </label>
+          <!-- ខ្លឹមសារមេរៀន / ខ្លឹមសារសកម្មភាព គ្រប់ជំហាន -->
+          <div class="mb-3">
+            <div class="flex items-center justify-between mb-1">
+              <label
+                class="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+              >
+                📝 ខ្លឹមសារមេរៀន / ខ្លឹមសារសកម្មភាព (ជំហានទី{{ khNum[currentStep] }})
+              </label>
+              <span class="text-xs text-slate-400">
+                អាចសរសេរអត្ថបទ រូបមន្ត រូបភាព ឬចំណុចសំខាន់ៗ
+              </span>
+            </div>
             <RichEditor
-              v-model="form.step3Content"
-              placeholder="រូបមន្ត / ចំណុចសំខាន់ / រូបភាព..."
-              :height="200"
+              v-model="
+                (form as any)[steps[currentStep]?.content || 'step1Content']
+              "
+              :placeholder="
+                steps[currentStep]?.contentPlaceholder ||
+                'ខ្លឹមសារមេរៀន / ខ្លឹមសារសកម្មភាព...'
+              "
+              :height="170"
             />
           </div>
 
@@ -232,28 +242,34 @@
               <label
                 class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
-                សកម្មភាពគ្រូ
+                👨‍🏫 សកម្មភាពគ្រូ
               </label>
               <RichEditor
                 v-model="
                   (form as any)[steps[currentStep]?.teacher || 'step1Teacher']
                 "
-                placeholder="ពន្យល់ / បង្ហាញ / ដឹកនាំ..."
-                :height="180"
+                :placeholder="
+                  steps[currentStep]?.teacherPlaceholder ||
+                  'ពន្យល់ / បង្ហាញ / ដឹកនាំ...'
+                "
+                :height="170"
               />
             </div>
             <div>
               <label
                 class="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300"
               >
-                សកម្មភាពសិស្ស
+                🧑‍🎓 សកម្មភាពសិស្ស
               </label>
               <RichEditor
                 v-model="
                   (form as any)[steps[currentStep]?.student || 'step1Student']
                 "
-                placeholder="ស្តាប់ / ពិភាក្សា / អនុវត្ត..."
-                :height="180"
+                :placeholder="
+                  steps[currentStep]?.studentPlaceholder ||
+                  'ស្តាប់ / ពិភាក្សា / អនុវត្ត...'
+                "
+                :height="170"
               />
             </div>
           </div>
@@ -354,34 +370,54 @@ const khNum = ["១", "២", "៣", "៤", "៥"];
 
 const steps = [
   {
-    title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់",
-    shortTitle: "វត្តមាន",
+    title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់ (រដ្ឋបាលថ្នាក់)",
+    shortTitle: "រដ្ឋបាលថ្នាក់",
+    content: "step1Content",
     teacher: "step1Teacher",
     student: "step1Student",
+    contentPlaceholder: "អនាម័យ សណ្តាប់ធ្នាប់ វត្តមានសិស្ស កិច្ចការរដ្ឋបាលថ្នាក់...",
+    teacherPlaceholder: "ពិនិត្យវត្តមាន សណ្តាប់ធ្នាប់ អនាម័យ...",
+    studentPlaceholder: "ប្រធានថ្នាក់រាយការណ៍ អង្គុយតាមកន្លែង រៀបរយ...",
   },
   {
     title: "រំលឹកមេរៀនចាស់",
-    shortTitle: "រំលឹក",
+    shortTitle: "រំលឹកមេរៀនចាស់",
+    content: "step2Content",
     teacher: "step2Teacher",
     student: "step2Student",
+    contentPlaceholder: "សំណួរគន្លឹះ ឬរូបមន្តដែលត្រូវរំលឹកពីមេរៀនមុន...",
+    teacherPlaceholder: "សួរសំណួរទៅកាន់សិស្ស លើកទឹកចិត្ត...",
+    studentPlaceholder: "ឆ្លើយសំណួរ ឡើងដោះស្រាយលើក្តារខៀន...",
   },
   {
     title: "មេរៀនថ្មី & ខ្លឹមសារ",
     shortTitle: "មេរៀនថ្មី",
+    content: "step3Content",
     teacher: "step3Teacher",
     student: "step3Student",
+    contentPlaceholder: "ចំណងជើងរង ទ្រឹស្តី រូបមន្ត និយមន័យ ឧទាហរណ៍...",
+    teacherPlaceholder: "ពន្យល់ បង្ហាញរូបភាព/ពិសោធន៍ ដឹកនាំការពិភាក្សា...",
+    studentPlaceholder: "ស្តាប់ការបកស្រាយ កត់ត្រា ចូលរួមពិភាក្សាក្នុងក្រុម...",
   },
   {
-    title: "ពង្រឹងចំណេះដឹង",
-    shortTitle: "ពង្រឹង",
+    title: "ពង្រឹងចំណេះដឹង (ពង្រឹងពុទ្ធិ)",
+    shortTitle: "ពង្រឹងពុទ្ធិ",
+    content: "step4Content",
     teacher: "step4Teacher",
     student: "step4Student",
+    contentPlaceholder: "សំណួរពង្រឹងការយល់ដឹង លំហាត់អនុវត្តរហ័ស...",
+    teacherPlaceholder: "ដាក់សំណួរ/លំហាត់ តាមដាន និងជួយណែនាំ...",
+    studentPlaceholder: "ធ្វើលំហាត់ ឆ្លើយសំណួរ ឬប្រកួតប្រជែងជាក្រុម...",
   },
   {
     title: "បណ្តាំផ្ញើ & កិច្ចការផ្ទះ",
     shortTitle: "កិច្ចការផ្ទះ",
+    content: "step5Content",
     teacher: "step5Teacher",
     student: "step5Student",
+    contentPlaceholder: "កិច្ចការស្រាវជ្រាវ លំហាត់ត្រូវធ្វើនៅផ្ទះ បណ្តាំផ្ញើ...",
+    teacherPlaceholder: "ដាក់កិច្ចការផ្ទះ ណែនាំវិធីស្រាវជ្រាវ និងផ្តាំផ្ញើ...",
+    studentPlaceholder: "កត់ត្រាកិច្ចការផ្ទះ និងបណ្តាំផ្ញើរបស់គ្រូ...",
   },
 ] as const;
 
@@ -399,15 +435,19 @@ const empty = (): LessonPlan => ({
   objAttitude: "",
   materials: "",
   references: "",
+  step1Content: "",
   step1Teacher: "",
   step1Student: "",
+  step2Content: "",
   step2Teacher: "",
   step2Student: "",
   step3Content: "",
   step3Teacher: "",
   step3Student: "",
+  step4Content: "",
   step4Teacher: "",
   step4Student: "",
+  step5Content: "",
   step5Teacher: "",
   step5Student: "",
 });
@@ -457,7 +497,10 @@ const objProgress = computed(() => {
 const stepsProgress = computed(() => {
   let filled = 0;
   steps.forEach((s) => {
-    if ((form as any)[s.teacher] && (form as any)[s.student]) filled++;
+    const hasTeacher = !!(form as any)[s.teacher];
+    const hasStudent = !!(form as any)[s.student];
+    const hasContent = !!(form as any)[s.content];
+    if (hasTeacher || hasStudent || hasContent) filled++;
   });
   return Math.round((filled / steps.length) * 100);
 });

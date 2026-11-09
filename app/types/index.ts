@@ -13,15 +13,19 @@ export interface LessonPlan {
   objAttitude: string;
   materials: string;
   references: string;
+  step1Content?: string;
   step1Teacher: string;
   step1Student: string;
+  step2Content?: string;
   step2Teacher: string;
   step2Student: string;
   step3Content: string;
   step3Teacher: string;
   step3Student: string;
+  step4Content?: string;
   step4Teacher: string;
   step4Student: string;
+  step5Content?: string;
   step5Teacher: string;
   step5Student: string;
 }

@@ -12,6 +12,7 @@
     "db:seed": "bun run server/database/seed.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1164.0",
     "@element-plus/icons-vue": ">=0.2.6",
     "@element-plus/nuxt": "1.1.5",
     "@nuxtjs/i18n": "10.6.0",
@@ -25,6 +26,7 @@
     "nuxt": "^4.6.4",
     "pinia": "^4.1.0",
     "postgres": "^4.1.0",
+    "sharp": "^0.35.5",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0"
   },

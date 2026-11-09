@@ -296,11 +296,11 @@ export async function exportLessonPlanToDocx(plan: LessonPlan): Promise<void> {
   const steps = [
     {
       stepName: "ជំហានទី១",
-      title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់",
+      title: "ពិនិត្យវត្តមាន & សណ្តាប់ធ្នាប់ (រដ្ឋបាលថ្នាក់)",
       teacher: plan.step1Teacher,
       student: plan.step1Student,
       description: "ពិនិត្យអនាម័យ សណ្តាប់ធ្នាប់ និងវត្តមានសិស្សក្នុងថ្នាក់",
-      contentHtml: null,
+      contentHtml: plan.step1Content || null,
     },
     {
       stepName: "ជំហានទី២",
@@ -308,7 +308,7 @@ export async function exportLessonPlanToDocx(plan: LessonPlan): Promise<void> {
       teacher: plan.step2Teacher,
       student: plan.step2Student,
       description: "សួរសំណួររំលឹកចំណុចសំខាន់ៗនៃមេរៀនមុន",
-      contentHtml: null,
+      contentHtml: plan.step2Content || null,
     },
     {
       stepName: "ជំហានទី៣",
@@ -316,7 +316,7 @@ export async function exportLessonPlanToDocx(plan: LessonPlan): Promise<void> {
       teacher: plan.step3Teacher,
       student: plan.step3Student,
       description: "ខ្លឹមសារ និងទ្រឹស្តីគន្លឹះនៃមេរៀនថ្មី",
-      contentHtml: plan.step3Content,
+      contentHtml: plan.step3Content || null,
     },
     {
       stepName: "ជំហានទី៤",
@@ -324,7 +324,7 @@ export async function exportLessonPlanToDocx(plan: LessonPlan): Promise<void> {
       teacher: plan.step4Teacher,
       student: plan.step4Student,
       description: "សំណួរ និងលំហាត់អនុវត្តពង្រឹងការយល់ដឹង",
-      contentHtml: null,
+      contentHtml: plan.step4Content || null,
     },
     {
       stepName: "ជំហានទី៥",
@@ -332,7 +332,7 @@ export async function exportLessonPlanToDocx(plan: LessonPlan): Promise<void> {
       teacher: plan.step5Teacher,
       student: plan.step5Student,
       description: "ដាក់កិច្ចការស្រាវជ្រាវ និងការរំលឹកឱ្យសិស្សមើលមេរៀនបន្ត",
-      contentHtml: null,
+      contentHtml: plan.step5Content || null,
     },
   ];
 
@@ -360,7 +360,11 @@ export async function exportLessonPlanToDocx(plan: LessonPlan): Promise<void> {
       }),
     ];
 
-    if (step.contentHtml) {
+    const hasCustomContent =
+      step.contentHtml &&
+      step.contentHtml.replace(/<[^>]*>/g, "").trim().length > 0;
+
+    if (hasCustomContent) {
       const contentParas = htmlToDocxParagraphs(step.contentHtml, {
         fontSize: 20,
         afterSpacing: 40,

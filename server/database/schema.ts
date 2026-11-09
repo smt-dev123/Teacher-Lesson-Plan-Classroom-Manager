@@ -9,7 +9,9 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const schools = pgTable("schools", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `sch-${crypto.randomUUID()}`),
   name: text("name").notNull(),
   code: text("code").default(""),
   level: text("level").default("វិទ្យាល័យ"),
@@ -23,7 +25,9 @@ export const schools = pgTable("schools", {
 });
 
 export const academicYears = pgTable("academic_years", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `ay-${crypto.randomUUID()}`),
   name: text("name").notNull(), // e.g. "2024 - 2025"
   code: text("code").notNull(), // e.g. "2024-2025"
   startDate: text("start_date").default(""),
@@ -33,7 +37,9 @@ export const academicYears = pgTable("academic_years", {
 });
 
 export const subjects = pgTable("subjects", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `sub-${crypto.randomUUID()}`),
   schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   name: text("name").notNull(), // ឧ. រូបវិទ្យា
   code: text("code").default(""), // ឧ. PHY
@@ -46,7 +52,9 @@ export const subjects = pgTable("subjects", {
 });
 
 export const lessonPlans = pgTable("lesson_plans", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `plan-${crypto.randomUUID()}`),
   userId: varchar("user_id", { length: 64 }).default("user-1"),
   schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   academicYear: text("academic_year").default("2024-2025").notNull(),
@@ -77,7 +85,9 @@ export const lessonPlans = pgTable("lesson_plans", {
 });
 
 export const users = pgTable("users", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `user-${crypto.randomUUID()}`),
   schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
@@ -91,7 +101,9 @@ export const users = pgTable("users", {
 });
 
 export const assignments = pgTable("assignments", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `asg-${crypto.randomUUID()}`),
   schoolId: varchar("school_id", { length: 64 }).default("sch-1"),
   academicYear: text("academic_year").default("2024-2025"),
   title: text("title").notNull(),
@@ -105,7 +117,9 @@ export const assignments = pgTable("assignments", {
 });
 
 export const questions = pgTable("questions", {
-  id: varchar("id", { length: 64 }).primaryKey(),
+  id: varchar("id", { length: 64 })
+    .primaryKey()
+    .$defaultFn(() => `q-${crypto.randomUUID()}`),
   type: text("type").notNull(),
   subject: text("subject").notNull(),
   grade: text("grade").notNull(),

@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   if (body.status !== undefined) updateData.status = body.status;
   if (body.avatar !== undefined) updateData.avatar = body.avatar;
   if (body.password) {
-    updateData.password = hashPassword(body.password);
+    updateData.password = await hashPassword(body.password);
   }
 
   const [updated] = await db

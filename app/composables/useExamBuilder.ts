@@ -24,7 +24,7 @@ export const useExamBuilder = () => {
     >,
   ) => {
     currentExam.value = {
-      id: "exam-" + Date.now(),
+      id: `exam-${crypto.randomUUID()}`,
       ...meta,
       totalPoints: 0,
       questions: [],

@@ -10,12 +10,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const id = body.id || `sub-${Date.now()}`;
-
   const [newSubject] = await db
     .insert(subjects)
     .values({
-      id,
+      ...(body.id ? { id: body.id } : {}),
       schoolId: body.schoolId || "sch-1",
       name: body.name,
       code: body.code || "",

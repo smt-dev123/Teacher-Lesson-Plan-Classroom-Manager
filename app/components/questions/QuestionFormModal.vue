@@ -184,7 +184,7 @@ const submit = () => {
   if (!form.content.trim()) return;
   const data: Question = {
     ...form,
-    id: form.id || "q-" + Date.now(),
+    id: form.id || `q-${crypto.randomUUID()}`,
     options: form.type === "mcq" ? form.options : [],
     correctAnswer:
       form.type === "truefalse" || form.type === "short"

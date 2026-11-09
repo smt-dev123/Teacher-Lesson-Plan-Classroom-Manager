@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Check password
-  const isValid = verifyPassword(password, user.password || "");
+  const isValid = await verifyPassword(password, user.password || "");
   if (!isValid) {
     throw createError({
       statusCode: 401,

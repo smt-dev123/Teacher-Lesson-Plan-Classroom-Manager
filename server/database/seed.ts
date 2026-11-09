@@ -223,7 +223,7 @@ export async function seedDatabase() {
   // 4. Seed Users if empty
   const existingUsers = await db.select().from(users);
   if (existingUsers.length === 0) {
-    const defaultPassword = hashPassword("123456");
+    const defaultPassword = await hashPassword("123456");
     await db.insert(users).values([
       {
         id: "user-1",

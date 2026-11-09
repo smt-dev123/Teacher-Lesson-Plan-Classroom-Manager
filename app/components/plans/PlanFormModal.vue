@@ -469,7 +469,7 @@ const submit = () => {
   if (!isValid.value) return;
   const data: LessonPlan = {
     ...form,
-    id: form.id || "plan-" + Date.now(),
+    id: form.id || `plan-${crypto.randomUUID()}`,
   };
   emit("save", data);
 };

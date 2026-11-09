@@ -87,6 +87,6 @@ watch(visible, (v) => {
 
 const submit = () => {
   if (!form.title) return;
-  emit("save", { ...form, id: "asg-" + Date.now() });
+  emit("save", { ...form, id: form.id || `asg-${crypto.randomUUID()}` });
 };
 </script>

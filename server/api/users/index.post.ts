@@ -11,16 +11,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const id = body.id || `user-${Date.now()}`;
   const password = body.password
-    ? hashPassword(body.password)
-    : hashPassword("123456");
+    ? await hashPassword(body.password)
+    : await hashPassword("123456");
 
   const [newUser] = await db
     .insert(users)
     .values({
       ...body,
-      id,
+      ...(body.id ? { id: body.id } : {}),
       email: body.email.trim().toLowerCase(),
       password,
     })
@@ -36,6 +35,13 @@ export default defineEventHandler(async (event) => {
       avatar: users.avatar,
       createdAt: users.createdAt,
     });
+
+  if (!newUser) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: "មិនអាចបន្ថែមអ្នកប្រើប្រាស់បានទេ",
+    });
+  }
 
   return {
     success: true,
